@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Identity\Domain;
 
+use App\Identity\Domain\Role\Exception\InvalidRoleCode;
 use App\Identity\Domain\Role\Role;
 use App\Identity\Domain\Role\RoleId;
 use App\Shared\Domain\Permission;
 use App\Tests\Double\InMemoryRoleRepository;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 final class RoleTest extends TestCase
@@ -29,5 +31,40 @@ final class RoleTest extends TestCase
         foreach (Permission::cases() as $permission) {
             self::assertTrue($superAdmin->grants($permission));
         }
+    }
+
+    public function testPermissionsFollowCatalogueOrder(): void
+    {
+        $role = Role::create(RoleId::fromString('00000000-0000-7000-8000-000000000001'), 'editor', 'Editor', [Permission::RoleManage, Permission::UserView]);
+
+        self::assertSame([Permission::UserView, Permission::RoleManage], $role->permissions());
+    }
+
+    public function testRenameTrims(): void
+    {
+        $role = Role::create(RoleId::fromString('00000000-0000-7000-8000-000000000001'), 'editor', '  Editor  ', []);
+
+        self::assertSame('Editor', $role->name());
+    }
+
+    #[TestWith([''])]
+    #[TestWith(['   '])]
+    #[TestWith(['x', 101])]
+    public function testRenameRejectsBlankOrTooLong(string $char, int $times = 1): void
+    {
+        $role = Role::create(RoleId::fromString('00000000-0000-7000-8000-000000000001'), 'editor', 'Editor', []);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $role->rename(str_repeat($char, $times));
+    }
+
+    #[TestWith(['Editor'])]
+    #[TestWith(['e'])]
+    #[TestWith(['1editor'])]
+    #[TestWith(['edi-tor'])]
+    public function testItRejectsInvalidCode(string $code): void
+    {
+        $this->expectException(InvalidRoleCode::class);
+        Role::create(RoleId::fromString('00000000-0000-7000-8000-000000000001'), $code, 'Editor', []);
     }
 }
