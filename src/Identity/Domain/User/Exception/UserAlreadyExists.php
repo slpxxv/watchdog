@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Identity\Domain\User\Exception;
 
 use App\Identity\Domain\User\Email;
-use App\Shared\Domain\DomainError;
+use App\Shared\Domain\Error\DomainError;
 
 final class UserAlreadyExists extends DomainError
 {

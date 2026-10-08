@@ -10,12 +10,12 @@ use App\Identity\Application\Command\DeleteRole\DeleteRole;
 use App\Identity\Application\Command\DeleteRole\DeleteRoleHandler;
 use App\Identity\Application\Command\UpdateRole\UpdateRole;
 use App\Identity\Application\Command\UpdateRole\UpdateRoleHandler;
-use App\Identity\Domain\Acl\Exception\PrivilegeEscalation;
-use App\Identity\Domain\Acl\Permission;
 use App\Identity\Domain\Role\Exception\CannotDeleteSystemRole;
 use App\Identity\Domain\Role\Exception\InvalidRoleCode;
 use App\Identity\Domain\Role\Exception\RoleAlreadyExists;
 use App\Identity\Domain\Role\Role;
+use App\Identity\Domain\User\Exception\PrivilegeEscalation;
+use App\Shared\Domain\Permission;
 
 final class RoleManagementTest extends AclTestCase
 {

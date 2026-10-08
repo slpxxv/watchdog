@@ -6,8 +6,8 @@ namespace App\Tests\Functional;
 
 use App\Identity\Application\Command\CreateUser\CreateUser;
 use App\Identity\Application\Command\CreateUser\CreateUserHandler;
-use App\Identity\Domain\Acl\Permission;
 use App\Identity\Domain\Role\Role;
+use App\Shared\Domain\Permission;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Identity\Domain\Role;
 
-use App\Identity\Domain\Acl\Permission;
 use App\Identity\Domain\Role\Exception\InvalidRoleCode;
+use App\Shared\Domain\Permission;
 
 class Role
 {

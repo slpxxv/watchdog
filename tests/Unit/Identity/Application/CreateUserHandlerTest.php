@@ -6,10 +6,10 @@ namespace App\Tests\Unit\Identity\Application;
 
 use App\Identity\Application\Command\CreateUser\CreateUser;
 use App\Identity\Application\Exception\WeakPassword;
-use App\Identity\Domain\Acl\Permission;
 use App\Identity\Domain\Role\Exception\RoleNotFound;
 use App\Identity\Domain\Role\Role;
 use App\Identity\Domain\User\Exception\UserAlreadyExists;
+use App\Shared\Domain\Permission;
 
 final class CreateUserHandlerTest extends AclTestCase
 {

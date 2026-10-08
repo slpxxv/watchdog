@@ -6,9 +6,9 @@ namespace App\Identity\Application\Command\AssignUserRoles;
 
 use App\Identity\Application\Service\Actor;
 use App\Identity\Application\Service\RoleResolver;
-use App\Identity\Domain\Acl\Exception\PrivilegeEscalation;
 use App\Identity\Domain\Role\Role;
 use App\Identity\Domain\User\Exception\LastSuperAdmin;
+use App\Identity\Domain\User\Exception\PrivilegeEscalation;
 use App\Identity\Domain\User\Exception\UserNotFound;
 use App\Identity\Domain\User\UserRepository;
 

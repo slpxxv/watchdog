@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Identity\Domain\Role\Exception;
 
-use App\Shared\Domain\DomainError;
+use App\Shared\Domain\Error\DomainError;
 
 final class RoleNotFound extends DomainError
 {

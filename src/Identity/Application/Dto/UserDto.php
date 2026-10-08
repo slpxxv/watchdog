@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Identity\Application\Dto;
 
-use App\Identity\Domain\Acl\Permission;
 use App\Identity\Domain\Role\Role;
 use App\Identity\Domain\User\User;
+use App\Shared\Domain\Permission;
 
 final readonly class UserDto
 {

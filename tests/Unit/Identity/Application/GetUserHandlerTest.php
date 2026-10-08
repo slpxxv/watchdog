@@ -6,10 +6,10 @@ namespace App\Tests\Unit\Identity\Application;
 
 use App\Identity\Application\Query\GetUser\GetUser;
 use App\Identity\Application\Query\GetUser\GetUserHandler;
-use App\Identity\Domain\Acl\Permission;
 use App\Identity\Domain\Role\Role;
 use App\Identity\Domain\User\Exception\UserNotFound;
 use App\Identity\Domain\User\UserId;
+use App\Shared\Domain\Permission;
 
 final class GetUserHandlerTest extends AclTestCase
 {

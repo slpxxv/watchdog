@@ -7,7 +7,7 @@ namespace App\Identity\UI\Console;
 use App\Identity\Application\Command\CreateUser\CreateUser;
 use App\Identity\Application\Command\CreateUser\CreateUserHandler;
 use App\Identity\Domain\Role\Role;
-use App\Shared\Domain\DomainError;
+use App\Shared\Domain\Error\DomainError;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;

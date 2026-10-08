@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Identity\Domain;
 
-use App\Identity\Domain\Acl\Permission;
 use App\Identity\Domain\Role\Role;
 use App\Identity\Domain\Role\RoleId;
+use App\Shared\Domain\Permission;
 use App\Tests\Double\InMemoryRoleRepository;
 use PHPUnit\Framework\TestCase;
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Identity\Application\Command\CreateRole;
 
-use App\Identity\Domain\Acl\Permission;
 use App\Identity\Domain\User\UserId;
+use App\Shared\Domain\Permission;
 
 final readonly class CreateRole
 {

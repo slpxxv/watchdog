@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\Acl\Exception;
+namespace App\Identity\Domain\User\Exception;
 
-use App\Identity\Domain\Acl\Permission;
-use App\Shared\Domain\DomainError;
+use App\Shared\Domain\Error\DomainError;
+use App\Shared\Domain\Permission;
 
 final class PrivilegeEscalation extends DomainError
 {

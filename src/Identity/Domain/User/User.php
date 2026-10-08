@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Identity\Domain\User;
 
-use App\Identity\Domain\Acl\Exception\PrivilegeEscalation;
-use App\Identity\Domain\Acl\Permission;
 use App\Identity\Domain\Role\Role;
+use App\Identity\Domain\User\Exception\PrivilegeEscalation;
+use App\Shared\Domain\Permission;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 

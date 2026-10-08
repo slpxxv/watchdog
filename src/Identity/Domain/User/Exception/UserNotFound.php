@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Identity\Domain\User\Exception;
 
 use App\Identity\Domain\User\UserId;
-use App\Shared\Domain\DomainError;
+use App\Shared\Domain\Error\DomainError;
 
 final class UserNotFound extends DomainError
 {

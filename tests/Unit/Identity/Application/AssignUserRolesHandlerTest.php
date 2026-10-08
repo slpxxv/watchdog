@@ -7,11 +7,11 @@ namespace App\Tests\Unit\Identity\Application;
 use App\Identity\Application\Command\AssignUserRoles\AssignUserRoles;
 use App\Identity\Application\Command\AssignUserRoles\AssignUserRolesHandler;
 use App\Identity\Application\Service\RoleResolver;
-use App\Identity\Domain\Acl\Exception\PrivilegeEscalation;
-use App\Identity\Domain\Acl\Permission;
 use App\Identity\Domain\Role\Role;
 use App\Identity\Domain\User\Exception\LastSuperAdmin;
+use App\Identity\Domain\User\Exception\PrivilegeEscalation;
 use App\Identity\Domain\User\UserId;
+use App\Shared\Domain\Permission;
 
 final class AssignUserRolesHandlerTest extends AclTestCase
 {

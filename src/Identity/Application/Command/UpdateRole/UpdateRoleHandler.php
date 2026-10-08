@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Identity\Application\Command\UpdateRole;
 
 use App\Identity\Application\Service\Actor;
-use App\Identity\Domain\Acl\Exception\PrivilegeEscalation;
-use App\Identity\Domain\Acl\Permission;
 use App\Identity\Domain\Role\Exception\RoleNotFound;
 use App\Identity\Domain\Role\RoleRepository;
+use App\Identity\Domain\User\Exception\PrivilegeEscalation;
+use App\Shared\Domain\Permission;
 
 final readonly class UpdateRoleHandler
 {
