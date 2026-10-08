@@ -1,0 +1,37 @@
+nelmio_security:
+    clickjacking:
+        paths:
+            '^/.*': DENY
+
+    content_type:
+        nosniff: true
+
+    referrer_policy:
+        enabled: true
+        policies:
+            - 'no-referrer'
+            - 'strict-origin-when-cross-origin'
+
+    csp:
+        compat_headers: false
+        enabled: true
+        enforce:
+            level1_fallback: false
+            default-src: ['self']
+            script-src: ['self']
+            style-src: ['self']
+            img-src: ['self', 'data:']
+            connect-src: ['self']
+            font-src: ['self']
+            object-src: ['none']
+            base-uri: ['self']
+            form-action: ['self']
+            frame-ancestors: ['none']
+            block-all-mixed-content: true
+
+when@prod:
+    nelmio_security:
+        forced_ssl:
+            enabled: true
+            hsts_max_age: 31536000
+            hsts_subdomains: true

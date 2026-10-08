@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Identity\Domain\User\User" table="identity_user">
+        <id name="id" type="guid"/>
+        <field name="email" length="180" unique="true"/>
+        <field name="passwordHash" column="password_hash"/>
+        <field name="createdAt" column="created_at" type="datetime_immutable"/>
+
+        <!-- EAGER: roles are needed on every request (user refresh + permission checks). -->
+        <many-to-many field="roles" target-entity="App\Identity\Domain\Role\Role" fetch="EAGER">
+            <join-table name="identity_user_role">
+                <join-columns>
+                    <join-column name="user_id" referenced-column-name="id" on-delete="CASCADE"/>
+                </join-columns>
+                <inverse-join-columns>
+                    <join-column name="role_id" referenced-column-name="id" on-delete="CASCADE"/>
+                </inverse-join-columns>
+            </join-table>
+        </many-to-many>
+    </entity>
+</doctrine-mapping>

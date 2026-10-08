@@ -1,0 +1,9 @@
+# `symfony serve -d` starts everything: Postgres + Redis (compose.yaml), the API on :8000 and Vite on :5173.
+http:
+    port: 8000
+    no_tls: true # Vite proxies to it; the browser only talks to http://localhost:5173
+
+workers:
+    docker_compose: ~
+    vite:
+        cmd: ['npm', '--prefix', 'frontend', 'run', 'dev']

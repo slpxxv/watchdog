@@ -1,0 +1,19 @@
+framework:
+    secret: '%env(APP_SECRET)%'
+
+    session:
+        handler_id: '%env(REDIS_URL)%'
+        cookie_secure: auto
+        cookie_samesite: lax
+        cookie_httponly: true
+        name: WATCHDOGSID
+
+    trusted_proxies: '%env(default::TRUSTED_PROXIES)%'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port']
+
+when@test:
+    framework:
+        test: true
+        session:
+            handler_id: null
+            storage_factory_id: session.storage.factory.mock_file

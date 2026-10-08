@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Lint, PHPStan, Deptrac, PHPUnit
+    runs-on: ubuntu-latest
+    services:
+      database:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: app
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: '!ChangeMe!'
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U app" --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:8-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=17&charset=utf8
+      REDIS_URL: redis://127.0.0.1:6379
+      MESSENGER_TRANSPORT_DSN: redis://127.0.0.1:6379/messages
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl, pdo_pgsql, redis, apcu
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - run: composer validate --strict
+      - run: composer install --prefer-dist --no-progress --no-interaction
+      - run: composer audit
+
+      - name: Symfony lints
+        run: |
+          bin/console lint:container
+          bin/console lint:yaml config --parse-tags
+
+      - name: Code style
+        run: vendor/bin/php-cs-fixer check --diff
+
+      - name: PHPStan
+        run: |
+          bin/console cache:warmup --env=dev
+          vendor/bin/phpstan analyse --no-progress --error-format=github --memory-limit=1G
+
+      - name: Deptrac
+        run: vendor/bin/deptrac analyse --no-progress --report-uncovered --fail-on-uncovered
+
+      - name: Database
+        run: |
+          bin/console doctrine:database:create --env=test --if-not-exists
+          bin/console doctrine:migrations:migrate --env=test --no-interaction
+          bin/console doctrine:schema:validate --env=test
+
+      - name: PHPUnit
+        run: vendor/bin/phpunit
+
+  frontend:
+    name: Frontend (type-check, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build

@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Identity\Domain\User\Exception;
+
+use App\Identity\Domain\User\UserId;
+use App\Shared\Domain\DomainError;
+
+final class UserNotFound extends DomainError
+{
+    public static function withId(UserId $id): self
+    {
+        return new self(\sprintf('User "%s" not found.', $id->value), 'identity.user.not_found', ['%id%' => $id->value]);
+    }
+}

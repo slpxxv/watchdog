@@ -1,0 +1,38 @@
+deptrac:
+  paths:
+    - ./src
+  layers:
+    - name: Domain
+      collectors:
+        - type: directory
+          value: src/\w+/Domain/.*
+    - name: Application
+      collectors:
+        - type: directory
+          value: src/\w+/Application/.*
+    - name: Infrastructure
+      collectors:
+        - type: directory
+          value: src/\w+/Infrastructure/.*
+    - name: UI
+      collectors:
+        - type: directory
+          value: src/\w+/UI/.*
+    # The one library the domain may use: to-many associations need a Collection.
+    - name: Collections
+      collectors:
+        - type: classLike
+          value: ^Doctrine\\Common\\Collections\\.*
+    - name: Framework
+      collectors:
+        - type: classLike
+          value: ^(Symfony|Twig|Doctrine\\(?!Common\\Collections\\))\\?.*
+    - name: Psr
+      collectors:
+        - type: classLike
+          value: ^Psr\\.*
+  ruleset:
+    Domain: [Collections]
+    Application: [Domain, Collections, Psr]
+    Infrastructure: [Domain, Application, Collections, Framework, Psr]
+    UI: [Application, Domain, Framework]

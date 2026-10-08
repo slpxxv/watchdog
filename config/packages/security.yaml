@@ -1,0 +1,39 @@
+security:
+    password_hashers:
+        App\Identity\Infrastructure\Security\SecurityUser: 'auto'
+
+    providers:
+        app_users:
+            id: App\Identity\Infrastructure\Security\SecurityUserProvider
+
+    firewalls:
+        dev:
+            pattern: ^/(_profiler|_wdt)/
+            security: false
+        main:
+            lazy: true
+            provider: app_users
+            # Session cookie auth for the same-origin SPA. CSRF: the cookie is SameSite=Lax and
+            # json_login only accepts a JSON body, which a cross-site form cannot send.
+            json_login:
+                check_path: identity_login
+                username_path: email
+                password_path: password
+            logout:
+                path: /api/logout
+            login_throttling:
+                max_attempts: 5
+                interval: '15 minutes'
+
+    access_control:
+        - { path: ^/api/(login|logout)$, roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: ROLE_USER }
+
+when@test:
+    security:
+        password_hashers:
+            App\Identity\Infrastructure\Security\SecurityUser:
+                algorithm: auto
+                cost: 4
+                time_cost: 3
+                memory_cost: 10
