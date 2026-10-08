@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Shared\Domain;
+namespace App\Shared\Domain\Error;
 
 /**
  * messageKey + messageParameters are for the client to translate; getMessage() is for logs/CLI.

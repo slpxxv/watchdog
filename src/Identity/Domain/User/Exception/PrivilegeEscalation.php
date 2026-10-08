@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Identity\Domain\User\Exception;
 
 use App\Shared\Domain\Error\DomainError;
+use App\Shared\Domain\Error\Forbidden;
 use App\Shared\Domain\Permission;
 
-final class PrivilegeEscalation extends DomainError
+final class PrivilegeEscalation extends DomainError implements Forbidden
 {
     public static function missing(Permission $permission): self
     {

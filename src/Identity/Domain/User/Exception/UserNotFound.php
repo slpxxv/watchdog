@@ -6,8 +6,9 @@ namespace App\Identity\Domain\User\Exception;
 
 use App\Identity\Domain\User\UserId;
 use App\Shared\Domain\Error\DomainError;
+use App\Shared\Domain\Error\NotFound;
 
-final class UserNotFound extends DomainError
+final class UserNotFound extends DomainError implements NotFound
 {
     public static function withId(UserId $id): self
     {
