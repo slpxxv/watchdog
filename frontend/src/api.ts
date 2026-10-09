@@ -39,3 +39,36 @@ export async function me(): Promise<Me | null> {
 export async function logout(): Promise<void> {
   await api('/logout', { method: 'POST' })
 }
+
+export interface Project {
+  id: string
+  name: string
+  createdAt: string // ISO 8601
+}
+
+// Domain errors arrive as problem+json with a stable messageKey; anything else falls back to `detail`.
+const problemMessages: Record<string, (params: Record<string, string | number>) => string> = {
+  'project.name.invalid': (p) => `Nazwa projektu musi mieć od 1 do ${p['%max%']} znaków.`,
+  'project.not_found': () => 'Projekt nie istnieje.',
+}
+
+async function body<T>(res: Response): Promise<T> {
+  if (res.ok) return res.json()
+  const problem = await res.json().catch(() => ({}))
+  const message = problemMessages[problem.messageKey]?.(problem.messageParameters ?? {})
+  if (message) throw new Error(message)
+  if (res.status === 403) throw new Error('Brak uprawnień.')
+  throw new Error(problem.detail || `Błąd serwera (HTTP ${res.status}).`)
+}
+
+export async function listProjects(): Promise<Project[]> {
+  return body(await api('/projects'))
+}
+
+export async function createProject(name: string): Promise<Project> {
+  return body(await api('/projects', { method: 'POST', body: JSON.stringify({ name }) }))
+}
+
+export async function renameProject(id: string, name: string): Promise<Project> {
+  return body(await api(`/projects/${id}`, { method: 'PATCH', body: JSON.stringify({ name }) }))
+}
