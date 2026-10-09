@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\UI\Console;
+namespace Watchdog\Identity\UI\Console;
 
-use App\Identity\Application\Command\CreateUser\CreateUser;
-use App\Identity\Application\Command\CreateUser\CreateUserHandler;
-use App\Identity\Domain\Role\Role;
-use App\Shared\Domain\DomainError;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Watchdog\Identity\Application\Command\CreateUser\CreateUser;
+use Watchdog\Identity\Application\Command\CreateUser\CreateUserHandler;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Shared\Domain\Error\DomainError;
 
 #[AsCommand(name: 'app:user:create', description: 'Creates a user account')]
 final readonly class CreateUserCommand
@@ -40,7 +40,11 @@ final readonly class CreateUserCommand
         $roles = [Role::USER, ...$role, ...($admin ? [Role::SUPER_ADMIN] : [])];
 
         try {
-            $id = ($this->handler)(new CreateUser($email, $password, $roles));
+            $id = ($this->handler)(new CreateUser(
+                email: $email,
+                plainPassword: $password,
+                roleCodes: $roles,
+            ));
         } catch (DomainError $e) {
             $io->error($e->getMessage());
 

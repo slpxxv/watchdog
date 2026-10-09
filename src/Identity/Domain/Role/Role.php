@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\Role;
+namespace Watchdog\Identity\Domain\Role;
 
-use App\Identity\Domain\Acl\Permission;
-use App\Identity\Domain\Role\Exception\InvalidRoleCode;
+use Watchdog\Identity\Domain\Role\Exception\InvalidRoleCode;
+use Watchdog\Shared\Domain\Permission;
 
 class Role
 {
@@ -42,7 +42,12 @@ class Role
      */
     public static function create(RoleId $id, string $code, string $name, array $permissions): self
     {
-        return new self($id, $code, $name, $permissions);
+        return new self(
+            id: $id,
+            code: $code,
+            name: $name,
+            permissions: $permissions,
+        );
     }
 
     public function rename(string $name): void
@@ -100,13 +105,17 @@ class Role
         return $this->name;
     }
 
-    /** Super admin implicitly holds every permission, including ones added later. */
+    /**
+     * Super admin implicitly holds every permission, including ones added later.
+     */
     public function isSuperAdmin(): bool
     {
         return $this->superAdmin;
     }
 
-    /** System roles are seeded by migrations and cannot be deleted. */
+    /**
+     * System roles are seeded by migrations and cannot be deleted.
+     */
     public function isSystem(): bool
     {
         return $this->system;

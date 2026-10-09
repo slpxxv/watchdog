@@ -14,7 +14,7 @@ async function submit() {
   pending.value = true
   try {
     await login(email.value, password.value)
-    await router.push({ name: 'debug' })
+    await router.push({ name: 'projects' })
   } catch (e) {
     error.value = e instanceof Error ? e.message : String(e)
   } finally {

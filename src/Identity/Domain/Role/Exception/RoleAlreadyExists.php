@@ -2,14 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\Role\Exception;
+namespace Watchdog\Identity\Domain\Role\Exception;
 
-use App\Shared\Domain\DomainError;
+use Watchdog\Shared\Domain\Error\Conflict;
+use Watchdog\Shared\Domain\Error\DomainError;
 
-final class RoleAlreadyExists extends DomainError
+final class RoleAlreadyExists extends DomainError implements Conflict
 {
     public static function withCode(string $code): self
     {
-        return new self(\sprintf('Role "%s" already exists.', $code), 'identity.role.already_exists', ['%code%' => $code]);
+        return new self(
+            message: \sprintf('Role "%s" already exists.', $code),
+            messageKey: 'identity.role.already_exists',
+            messageParameters: ['%code%' => $code],
+        );
     }
 }

@@ -1,10 +1,10 @@
 security:
     password_hashers:
-        App\Identity\Infrastructure\Security\SecurityUser: 'auto'
+        Watchdog\Identity\Infrastructure\Security\SecurityUser: 'auto'
 
     providers:
         app_users:
-            id: App\Identity\Infrastructure\Security\SecurityUserProvider
+            id: Watchdog\Identity\Infrastructure\Security\SecurityUserProvider
 
     firewalls:
         dev:
@@ -32,7 +32,7 @@ security:
 when@test:
     security:
         password_hashers:
-            App\Identity\Infrastructure\Security\SecurityUser:
+            Watchdog\Identity\Infrastructure\Security\SecurityUser:
                 algorithm: auto
                 cost: 4
                 time_cost: 3

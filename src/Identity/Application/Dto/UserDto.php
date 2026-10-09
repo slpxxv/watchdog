@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Application\Dto;
+namespace Watchdog\Identity\Application\Dto;
 
-use App\Identity\Domain\Acl\Permission;
-use App\Identity\Domain\Role\Role;
-use App\Identity\Domain\User\User;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\User\User;
+use Watchdog\Shared\Domain\Permission;
 
 final readonly class UserDto
 {
@@ -29,11 +29,11 @@ final readonly class UserDto
         sort($roles); // the DB returns the role collection in no particular order
 
         return new self(
-            $user->id()->value,
-            $user->email()->value,
-            $roles,
-            array_map(static fn (Permission $p): string => $p->value, $user->permissions()),
-            $user->createdAt()->format(\DATE_ATOM),
+            id: $user->id()->value,
+            email: $user->email()->value,
+            roles: $roles,
+            permissions: array_map(static fn (Permission $p): string => $p->value, $user->permissions()),
+            createdAt: $user->createdAt()->format(\DATE_ATOM),
         );
     }
 }

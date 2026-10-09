@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\Role;
+namespace Watchdog\Identity\Domain\Role;
 
 interface RoleRepository
 {

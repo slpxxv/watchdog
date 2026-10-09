@@ -17,3 +17,16 @@ th, td { text-align: left; padding: .5rem; border-bottom: 1px solid var(--line);
 th { width: 30%; }
 code, pre { font: 14px/1.5 ui-monospace, monospace; }
 pre { padding: 1rem; border: 1px solid var(--line); border-radius: 6px; overflow-x: auto; }
+.topbar { display: flex; gap: 2rem; align-items: center; }
+.topbar nav { display: flex; gap: 1rem; }
+.topbar a { text-decoration: none; }
+.topbar a.router-link-active { font-weight: 600; text-decoration: underline; }
+.inline { display: flex; gap: .5rem; align-items: center; margin-top: 1rem; }
+.inline input { flex: 1; }
+.inline button, .actions button { margin-top: 0; }
+button.secondary { background: transparent; color: var(--accent); border: 1px solid currentColor; padding: .5rem 1rem; }
+.list th { width: auto; }
+.actions { text-align: right; width: 1%; white-space: nowrap; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+button.danger { color: var(--danger); }
+.actions button + button { margin-left: .5rem; }

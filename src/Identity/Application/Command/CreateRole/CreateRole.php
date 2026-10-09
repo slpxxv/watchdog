@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Application\Command\CreateRole;
+namespace Watchdog\Identity\Application\Command\CreateRole;
 
-use App\Identity\Domain\Acl\Permission;
-use App\Identity\Domain\User\UserId;
+use Watchdog\Identity\Domain\User\UserId;
+use Watchdog\Shared\Domain\Permission;
 
 final readonly class CreateRole
 {

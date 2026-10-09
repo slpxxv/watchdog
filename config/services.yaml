@@ -5,5 +5,5 @@ services:
         autowire: true
         autoconfigure: true
 
-    App\:
+    Watchdog\:
         resource: '../src/'

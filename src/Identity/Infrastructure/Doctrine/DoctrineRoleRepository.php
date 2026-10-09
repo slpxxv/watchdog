@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Infrastructure\Doctrine;
+namespace Watchdog\Identity\Infrastructure\Doctrine;
 
-use App\Identity\Domain\Role\Role;
-use App\Identity\Domain\Role\RoleId;
-use App\Identity\Domain\Role\RoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Uid\Uuid;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\Role\RoleId;
+use Watchdog\Identity\Domain\Role\RoleRepository;
 
 final readonly class DoctrineRoleRepository implements RoleRepository
 {

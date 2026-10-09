@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Application\Command\CreateUser;
+namespace Watchdog\Identity\Application\Command\CreateUser;
 
-use App\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\Role\Role;
 
 final readonly class CreateUser
 {

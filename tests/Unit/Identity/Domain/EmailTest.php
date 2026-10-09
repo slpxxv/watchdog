@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Identity\Domain;
+namespace Watchdog\Tests\Unit\Identity\Domain;
 
-use App\Identity\Domain\User\Email;
-use App\Identity\Domain\User\Exception\InvalidEmail;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Watchdog\Identity\Domain\User\Email;
+use Watchdog\Identity\Domain\User\Exception\InvalidEmail;
 
 final class EmailTest extends TestCase
 {

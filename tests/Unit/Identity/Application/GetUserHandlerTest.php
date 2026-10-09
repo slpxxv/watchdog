@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Identity\Application;
+namespace Watchdog\Tests\Unit\Identity\Application;
 
-use App\Identity\Application\Query\GetUser\GetUser;
-use App\Identity\Application\Query\GetUser\GetUserHandler;
-use App\Identity\Domain\Acl\Permission;
-use App\Identity\Domain\Role\Role;
-use App\Identity\Domain\User\Exception\UserNotFound;
-use App\Identity\Domain\User\UserId;
+use Watchdog\Identity\Application\Query\GetUser\GetUser;
+use Watchdog\Identity\Application\Query\GetUser\GetUserHandler;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\User\Exception\UserNotFound;
+use Watchdog\Identity\Domain\User\UserId;
+use Watchdog\Shared\Domain\Permission;
 
 final class GetUserHandlerTest extends AclTestCase
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Infrastructure\Security;
+namespace Watchdog\Identity\Infrastructure\Security;
 
-use App\Identity\Domain\Acl\Permission;
-use App\Identity\Domain\User\User;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Watchdog\Identity\Domain\User\User;
+use Watchdog\Shared\Domain\Permission;
 
 /**
  * Reloaded from the DB on every request (SecurityUserProvider::refreshUser), so permission changes apply immediately.
@@ -35,11 +35,11 @@ final readonly class SecurityUser implements UserInterface, PasswordAuthenticate
         $email = $user->email()->value;
 
         return new self(
-            $user->id()->value,
-            $email,
-            $user->passwordHash(),
-            $user->isSuperAdmin(),
-            array_map(static fn (Permission $p): string => $p->value, $user->permissions()),
+            id: $user->id()->value,
+            email: $email,
+            password: $user->passwordHash(),
+            superAdmin: $user->isSuperAdmin(),
+            permissions: array_map(static fn (Permission $p): string => $p->value, $user->permissions()),
         );
     }
 

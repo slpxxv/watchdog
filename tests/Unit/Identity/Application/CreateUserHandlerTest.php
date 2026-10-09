@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Identity\Application;
+namespace Watchdog\Tests\Unit\Identity\Application;
 
-use App\Identity\Application\Command\CreateUser\CreateUser;
-use App\Identity\Application\Exception\WeakPassword;
-use App\Identity\Domain\Acl\Permission;
-use App\Identity\Domain\Role\Exception\RoleNotFound;
-use App\Identity\Domain\Role\Role;
-use App\Identity\Domain\User\Exception\UserAlreadyExists;
+use Watchdog\Identity\Application\Command\CreateUser\CreateUser;
+use Watchdog\Identity\Application\Exception\WeakPassword;
+use Watchdog\Identity\Domain\Role\Exception\RoleNotFound;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\User\Exception\UserAlreadyExists;
+use Watchdog\Shared\Domain\Permission;
 
 final class CreateUserHandlerTest extends AclTestCase
 {

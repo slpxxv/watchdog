@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Functional;
+namespace Watchdog\Tests\Functional;
 
-use App\Identity\Application\Command\CreateUser\CreateUser;
-use App\Identity\Application\Command\CreateUser\CreateUserHandler;
-use App\Identity\Domain\Acl\Permission;
-use App\Identity\Domain\Role\Role;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Watchdog\Identity\Application\Command\CreateUser\CreateUser;
+use Watchdog\Identity\Application\Command\CreateUser\CreateUserHandler;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Shared\Domain\Permission;
 
 final class AuthenticationTest extends WebTestCase
 {

@@ -2,14 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\User\Exception;
+namespace Watchdog\Identity\Domain\User\Exception;
 
-use App\Shared\Domain\DomainError;
+use Watchdog\Shared\Domain\Error\DomainError;
 
 final class InvalidEmail extends DomainError
 {
     public static function for(string $value): self
     {
-        return new self(\sprintf('"%s" is not a valid email address.', $value), 'identity.email.invalid');
+        return new self(
+            message: \sprintf('"%s" is not a valid email address.', $value),
+            messageKey: 'identity.email.invalid',
+        );
     }
 }

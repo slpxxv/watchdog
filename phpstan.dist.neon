@@ -5,6 +5,6 @@ parameters:
         - tests/
     tmpDir: .phpstan.cache
     symfony:
-        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+        containerXmlPath: var/cache/dev/Watchdog_KernelDevDebugContainer.xml
     doctrine:
         objectManagerLoader: tests/object-manager.php

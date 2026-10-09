@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\User;
+namespace Watchdog\Identity\Domain\User;
 
 interface UserRepository
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Double;
+namespace Watchdog\Tests\Double;
 
-use App\Identity\Domain\Role\Role;
-use App\Identity\Domain\Role\RoleId;
-use App\Identity\Domain\Role\RoleRepository;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\Role\RoleId;
+use Watchdog\Identity\Domain\Role\RoleRepository;
 
 final class InMemoryRoleRepository implements RoleRepository
 {

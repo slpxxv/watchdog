@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Application\Query\GetUser;
+namespace Watchdog\Identity\Application\Query\GetUser;
 
-use App\Identity\Application\Dto\UserDto;
-use App\Identity\Domain\User\Exception\UserNotFound;
-use App\Identity\Domain\User\UserRepository;
+use Watchdog\Identity\Application\Dto\UserDto;
+use Watchdog\Identity\Domain\User\Exception\UserNotFound;
+use Watchdog\Identity\Domain\User\UserRepository;
 
 final readonly class GetUserHandler
 {

@@ -92,6 +92,21 @@ Symfony's coding standard, the `@Symfony` php-cs-fixer ruleset (a PSR-12-derived
 superset). Run `vendor/bin/php-cs-fixer fix` if `friendsofphp/php-cs-fixer` is
 installed; it isn't part of the skeleton by default.
 
+On top of what the fixer enforces (review-only, no tool checks these):
+
+- Calls to our own code in `src/` with two or more arguments: one argument per
+  line, named, trailing comma (`Project::create(id: ..., name: ..., createdAt: ...,)`).
+  Single-argument calls stay on one line.
+- Calls into Symfony, Doctrine, PHPUnit or PHP built-ins stay positional:
+  Symfony's BC promise doesn't cover parameter names, so a minor upgrade can
+  rename them. Attribute constructors (`#[Route(name: ...)]`) are the exception.
+- Tests may keep compact positional calls to helpers and fixtures.
+- No one-line `/** ... */` PHPDoc on classes or methods (one-line `/** @var */`
+  before a statement is fine).
+- Deliberate deviations from Symfony core's naming rules: no `Interface` or
+  `Exception` suffixes (`ProjectRepository`, `ProjectNotFound`). Domain names read
+  as the ubiquitous language.
+
 ## Discover, don't guess
 
 Framework APIs change between versions and your training data may be stale. Look

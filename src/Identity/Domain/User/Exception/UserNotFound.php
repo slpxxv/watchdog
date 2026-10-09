@@ -2,15 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\User\Exception;
+namespace Watchdog\Identity\Domain\User\Exception;
 
-use App\Identity\Domain\User\UserId;
-use App\Shared\Domain\DomainError;
+use Watchdog\Identity\Domain\User\UserId;
+use Watchdog\Shared\Domain\Error\DomainError;
+use Watchdog\Shared\Domain\Error\NotFound;
 
-final class UserNotFound extends DomainError
+final class UserNotFound extends DomainError implements NotFound
 {
     public static function withId(UserId $id): self
     {
-        return new self(\sprintf('User "%s" not found.', $id->value), 'identity.user.not_found', ['%id%' => $id->value]);
+        return new self(
+            message: \sprintf('User "%s" not found.', $id->value),
+            messageKey: 'identity.user.not_found',
+            messageParameters: ['%id%' => $id->value],
+        );
     }
 }

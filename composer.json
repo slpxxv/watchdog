@@ -21,6 +21,7 @@
         "symfony/redis-messenger": "8.1.*",
         "symfony/runtime": "8.1.*",
         "symfony/security-bundle": "8.1.*",
+        "symfony/serializer": "8.1.*",
         "symfony/uid": "8.1.*",
         "symfony/validator": "8.1.*",
         "symfony/yaml": "8.1.*"
@@ -37,12 +38,12 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "Watchdog\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\Tests\\": "tests/"
+            "Watchdog\\Tests\\": "tests/"
         }
     },
     "replace": {

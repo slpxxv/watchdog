@@ -1,0 +1,35 @@
+deptrac:
+    paths:
+        - ./src
+    layers:
+        - name: Identity
+          collectors:
+              - type: directory
+                value: src/Identity/(?!Application/(Query|Dto)/).*
+        - name: IdentityApi
+          collectors:
+              - type: directory
+                value: src/Identity/Application/(Query|Dto)/.*
+        - name: Project
+          collectors:
+              - type: directory
+                value: src/Project/(?!Application/(Query|Dto)/).*
+        - name: ProjectApi
+          collectors:
+              - type: directory
+                value: src/Project/Application/(Query|Dto)/.*
+        - name: Logging
+          collectors:
+              - type: directory
+                value: src/Logging/.*
+        - name: Shared
+          collectors:
+              - type: directory
+                value: src/Shared/.*
+    ruleset:
+        Identity: [Shared, IdentityApi]
+        IdentityApi: [Identity, Shared]
+        Project: [Shared, ProjectApi]
+        ProjectApi: [Project, Shared]
+        Logging: [Shared, ProjectApi]
+        Shared: []

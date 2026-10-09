@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\User;
+namespace Watchdog\Identity\Domain\User;
 
-use App\Identity\Domain\Acl\Exception\PrivilegeEscalation;
-use App\Identity\Domain\Acl\Permission;
-use App\Identity\Domain\Role\Role;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\User\Exception\PrivilegeEscalation;
+use Watchdog\Shared\Domain\Permission;
 
 class User
 {
@@ -37,7 +37,12 @@ class User
      */
     public static function register(UserId $id, Email $email, string $passwordHash, array $roles, \DateTimeImmutable $now): self
     {
-        $user = new self($id, $email, $passwordHash, $now);
+        $user = new self(
+            id: $id,
+            email: $email,
+            passwordHash: $passwordHash,
+            createdAt: $now,
+        );
         $user->assignRoles($roles);
 
         return $user;
