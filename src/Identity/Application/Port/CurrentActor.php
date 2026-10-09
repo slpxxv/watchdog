@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Application\Port;
+namespace Watchdog\Identity\Application\Port;
 
-use App\Identity\Domain\User\UserId;
+use Watchdog\Identity\Domain\User\UserId;
 
 interface CurrentActor
 {

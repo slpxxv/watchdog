@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Application\Exception;
+namespace Watchdog\Identity\Application\Exception;
 
-use App\Shared\Domain\Error\DomainError;
+use Watchdog\Shared\Domain\Error\DomainError;
 
 final class WeakPassword extends DomainError
 {

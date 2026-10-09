@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Infrastructure\Security;
+namespace Watchdog\Identity\Infrastructure\Security;
 
-use App\Identity\Domain\User\User;
-use App\Shared\Domain\Permission;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Watchdog\Identity\Domain\User\User;
+use Watchdog\Shared\Domain\Permission;
 
 /**
  * Reloaded from the DB on every request (SecurityUserProvider::refreshUser), so permission changes apply immediately.

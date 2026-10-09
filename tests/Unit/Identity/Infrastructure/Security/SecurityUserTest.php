@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Identity\Infrastructure\Security;
+namespace Watchdog\Tests\Unit\Identity\Infrastructure\Security;
 
-use App\Identity\Infrastructure\Security\SecurityUser;
-use App\Shared\Domain\Permission;
-use App\Tests\Double\Identities;
 use PHPUnit\Framework\TestCase;
+use Watchdog\Identity\Infrastructure\Security\SecurityUser;
+use Watchdog\Shared\Domain\Permission;
+use Watchdog\Tests\Double\Identities;
 
 final class SecurityUserTest extends TestCase
 {

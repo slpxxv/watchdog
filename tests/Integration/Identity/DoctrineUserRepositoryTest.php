@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Integration\Identity;
+namespace Watchdog\Tests\Integration\Identity;
 
-use App\Identity\Domain\Role\Role;
-use App\Identity\Domain\Role\RoleRepository;
-use App\Identity\Domain\User\Email;
-use App\Identity\Domain\User\User;
-use App\Identity\Domain\User\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\Role\RoleRepository;
+use Watchdog\Identity\Domain\User\Email;
+use Watchdog\Identity\Domain\User\User;
+use Watchdog\Identity\Domain\User\UserRepository;
 
 final class DoctrineUserRepositoryTest extends KernelTestCase
 {

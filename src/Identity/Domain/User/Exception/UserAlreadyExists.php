@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\User\Exception;
+namespace Watchdog\Identity\Domain\User\Exception;
 
-use App\Identity\Domain\User\Email;
-use App\Shared\Domain\Error\Conflict;
-use App\Shared\Domain\Error\DomainError;
+use Watchdog\Identity\Domain\User\Email;
+use Watchdog\Shared\Domain\Error\Conflict;
+use Watchdog\Shared\Domain\Error\DomainError;
 
 final class UserAlreadyExists extends DomainError implements Conflict
 {

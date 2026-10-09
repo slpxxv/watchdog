@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Application\Service;
+namespace Watchdog\Identity\Application\Service;
 
-use App\Identity\Domain\User\User;
-use App\Identity\Domain\User\UserId;
-use App\Identity\Domain\User\UserRepository;
+use Watchdog\Identity\Domain\User\User;
+use Watchdog\Identity\Domain\User\UserId;
+use Watchdog\Identity\Domain\User\UserRepository;
 
 final readonly class Actor
 {

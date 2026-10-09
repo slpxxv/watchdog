@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Application\Command\CreateUser;
+namespace Watchdog\Identity\Application\Command\CreateUser;
 
-use App\Identity\Application\Exception\WeakPassword;
-use App\Identity\Application\Port\PasswordHasher;
-use App\Identity\Application\Service\RoleResolver;
-use App\Identity\Domain\User\Email;
-use App\Identity\Domain\User\Exception\UserAlreadyExists;
-use App\Identity\Domain\User\User;
-use App\Identity\Domain\User\UserId;
-use App\Identity\Domain\User\UserRepository;
 use Psr\Clock\ClockInterface;
+use Watchdog\Identity\Application\Exception\WeakPassword;
+use Watchdog\Identity\Application\Port\PasswordHasher;
+use Watchdog\Identity\Application\Service\RoleResolver;
+use Watchdog\Identity\Domain\User\Email;
+use Watchdog\Identity\Domain\User\Exception\UserAlreadyExists;
+use Watchdog\Identity\Domain\User\User;
+use Watchdog\Identity\Domain\User\UserId;
+use Watchdog\Identity\Domain\User\UserRepository;
 
 final readonly class CreateUserHandler
 {

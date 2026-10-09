@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Double;
+namespace Watchdog\Tests\Double;
 
-use App\Identity\Domain\Role\Role;
-use App\Identity\Domain\Role\RoleId;
-use App\Identity\Domain\User\Email;
-use App\Identity\Domain\User\User;
-use App\Identity\Domain\User\UserId;
-use App\Shared\Domain\Permission;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\Role\RoleId;
+use Watchdog\Identity\Domain\User\Email;
+use Watchdog\Identity\Domain\User\User;
+use Watchdog\Identity\Domain\User\UserId;
+use Watchdog\Shared\Domain\Permission;
 
 /**
  * Builds domain users and roles for tests that don't go through the application handlers.

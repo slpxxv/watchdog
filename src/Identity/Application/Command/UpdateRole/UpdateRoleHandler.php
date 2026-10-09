@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Application\Command\UpdateRole;
+namespace Watchdog\Identity\Application\Command\UpdateRole;
 
-use App\Identity\Application\Service\Actor;
-use App\Identity\Domain\Role\Exception\RoleNotFound;
-use App\Identity\Domain\Role\RoleRepository;
-use App\Identity\Domain\User\Exception\PrivilegeEscalation;
-use App\Shared\Domain\Permission;
+use Watchdog\Identity\Application\Service\Actor;
+use Watchdog\Identity\Domain\Role\Exception\RoleNotFound;
+use Watchdog\Identity\Domain\Role\RoleRepository;
+use Watchdog\Identity\Domain\User\Exception\PrivilegeEscalation;
+use Watchdog\Shared\Domain\Permission;
 
 final readonly class UpdateRoleHandler
 {

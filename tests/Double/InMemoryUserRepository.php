@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Double;
+namespace Watchdog\Tests\Double;
 
-use App\Identity\Domain\User\Email;
-use App\Identity\Domain\User\User;
-use App\Identity\Domain\User\UserId;
-use App\Identity\Domain\User\UserRepository;
+use Watchdog\Identity\Domain\User\Email;
+use Watchdog\Identity\Domain\User\User;
+use Watchdog\Identity\Domain\User\UserId;
+use Watchdog\Identity\Domain\User\UserRepository;
 
 final class InMemoryUserRepository implements UserRepository
 {

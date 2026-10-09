@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Shared\Domain\Error;
+namespace Watchdog\Shared\Domain\Error;
 
 interface Conflict
 {

@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Project\Application;
+namespace Watchdog\Tests\Unit\Project\Application;
 
-use App\Project\Application\Command\CreateProject\CreateProject;
-use App\Project\Application\Command\CreateProject\CreateProjectHandler;
-use App\Project\Application\Command\RenameProject\RenameProject;
-use App\Project\Application\Command\RenameProject\RenameProjectHandler;
-use App\Project\Application\Dto\ProjectDto;
-use App\Project\Application\Query\GetProject\GetProject;
-use App\Project\Application\Query\GetProject\GetProjectHandler;
-use App\Project\Application\Query\ListProjects\ListProjects;
-use App\Project\Application\Query\ListProjects\ListProjectsHandler;
-use App\Project\Domain\Exception\ProjectNotFound;
-use App\Project\Domain\ProjectId;
-use App\Tests\Double\InMemoryProjectRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Clock\MockClock;
+use Watchdog\Project\Application\Command\CreateProject\CreateProject;
+use Watchdog\Project\Application\Command\CreateProject\CreateProjectHandler;
+use Watchdog\Project\Application\Command\RenameProject\RenameProject;
+use Watchdog\Project\Application\Command\RenameProject\RenameProjectHandler;
+use Watchdog\Project\Application\Dto\ProjectDto;
+use Watchdog\Project\Application\Query\GetProject\GetProject;
+use Watchdog\Project\Application\Query\GetProject\GetProjectHandler;
+use Watchdog\Project\Application\Query\ListProjects\ListProjects;
+use Watchdog\Project\Application\Query\ListProjects\ListProjectsHandler;
+use Watchdog\Project\Domain\Exception\ProjectNotFound;
+use Watchdog\Project\Domain\ProjectId;
+use Watchdog\Tests\Double\InMemoryProjectRepository;
 
 final class ProjectHandlersTest extends TestCase
 {

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\UI\Http;
+namespace Watchdog\Identity\UI\Http;
 
-use App\Identity\Application\Port\CurrentActor;
-use App\Identity\Application\Query\GetUser\GetUser;
-use App\Identity\Application\Query\GetUser\GetUserHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Watchdog\Identity\Application\Port\CurrentActor;
+use Watchdog\Identity\Application\Query\GetUser\GetUser;
+use Watchdog\Identity\Application\Query\GetUser\GetUserHandler;
 
 final class SecurityController extends AbstractController
 {

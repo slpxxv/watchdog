@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\Role\Exception;
+namespace Watchdog\Identity\Domain\Role\Exception;
 
-use App\Shared\Domain\Error\Conflict;
-use App\Shared\Domain\Error\DomainError;
+use Watchdog\Shared\Domain\Error\Conflict;
+use Watchdog\Shared\Domain\Error\DomainError;
 
 final class RoleAlreadyExists extends DomainError implements Conflict
 {

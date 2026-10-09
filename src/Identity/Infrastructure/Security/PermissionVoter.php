@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Infrastructure\Security;
+namespace Watchdog\Identity\Infrastructure\Security;
 
-use App\Shared\Domain\Permission;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Watchdog\Shared\Domain\Permission;
 
 /**
  * @extends Voter<string, mixed>

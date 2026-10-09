@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Project\Application\Command\CreateProject;
+namespace Watchdog\Project\Application\Command\CreateProject;
 
-use App\Project\Domain\Project;
-use App\Project\Domain\ProjectId;
-use App\Project\Domain\ProjectRepository;
 use Psr\Clock\ClockInterface;
+use Watchdog\Project\Domain\Project;
+use Watchdog\Project\Domain\ProjectId;
+use Watchdog\Project\Domain\ProjectRepository;
 
 final readonly class CreateProjectHandler
 {

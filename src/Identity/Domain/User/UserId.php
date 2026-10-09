@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\User;
+namespace Watchdog\Identity\Domain\User;
 
-use App\Shared\Domain\Uuid;
+use Watchdog\Shared\Domain\Uuid;
 
 final readonly class UserId extends Uuid
 {

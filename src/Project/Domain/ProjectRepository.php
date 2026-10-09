@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Project\Domain;
+namespace Watchdog\Project\Domain;
 
 interface ProjectRepository
 {

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Identity\Domain;
+namespace Watchdog\Tests\Unit\Identity\Domain;
 
-use App\Identity\Domain\Role\Exception\InvalidRoleCode;
-use App\Identity\Domain\Role\Role;
-use App\Identity\Domain\Role\RoleId;
-use App\Shared\Domain\Permission;
-use App\Tests\Double\InMemoryRoleRepository;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
+use Watchdog\Identity\Domain\Role\Exception\InvalidRoleCode;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\Role\RoleId;
+use Watchdog\Shared\Domain\Permission;
+use Watchdog\Tests\Double\InMemoryRoleRepository;
 
 final class RoleTest extends TestCase
 {

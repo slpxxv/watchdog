@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Double;
+namespace Watchdog\Tests\Double;
 
-use App\Project\Domain\Project;
-use App\Project\Domain\ProjectId;
-use App\Project\Domain\ProjectRepository;
+use Watchdog\Project\Domain\Project;
+use Watchdog\Project\Domain\ProjectId;
+use Watchdog\Project\Domain\ProjectRepository;
 
 final class InMemoryProjectRepository implements ProjectRepository
 {

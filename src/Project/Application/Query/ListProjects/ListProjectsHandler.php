@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Project\Application\Query\ListProjects;
+namespace Watchdog\Project\Application\Query\ListProjects;
 
-use App\Project\Application\Dto\ProjectDto;
-use App\Project\Domain\ProjectRepository;
+use Watchdog\Project\Application\Dto\ProjectDto;
+use Watchdog\Project\Domain\ProjectRepository;
 
 final readonly class ListProjectsHandler
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\User\Exception;
+namespace Watchdog\Identity\Domain\User\Exception;
 
-use App\Shared\Domain\Error\DomainError;
-use App\Shared\Domain\Error\Forbidden;
-use App\Shared\Domain\Permission;
+use Watchdog\Shared\Domain\Error\DomainError;
+use Watchdog\Shared\Domain\Error\Forbidden;
+use Watchdog\Shared\Domain\Permission;
 
 final class PrivilegeEscalation extends DomainError implements Forbidden
 {

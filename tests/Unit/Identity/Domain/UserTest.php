@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Identity\Domain;
+namespace Watchdog\Tests\Unit\Identity\Domain;
 
-use App\Identity\Domain\User\Exception\PrivilegeEscalation;
-use App\Shared\Domain\Permission;
-use App\Tests\Double\Identities;
 use PHPUnit\Framework\TestCase;
+use Watchdog\Identity\Domain\User\Exception\PrivilegeEscalation;
+use Watchdog\Shared\Domain\Permission;
+use Watchdog\Tests\Double\Identities;
 
 final class UserTest extends TestCase
 {

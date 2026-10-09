@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Identity\Application;
+namespace Watchdog\Tests\Unit\Identity\Application;
 
-use App\Identity\Application\Command\CreateUser\CreateUser;
-use App\Identity\Application\Command\CreateUser\CreateUserHandler;
-use App\Identity\Application\Port\PasswordHasher;
-use App\Identity\Application\Service\Actor;
-use App\Identity\Application\Service\RoleResolver;
-use App\Identity\Domain\Role\Role;
-use App\Identity\Domain\User\UserId;
-use App\Shared\Domain\Permission;
-use App\Tests\Double\InMemoryRoleRepository;
-use App\Tests\Double\InMemoryUserRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Clock\MockClock;
+use Watchdog\Identity\Application\Command\CreateUser\CreateUser;
+use Watchdog\Identity\Application\Command\CreateUser\CreateUserHandler;
+use Watchdog\Identity\Application\Port\PasswordHasher;
+use Watchdog\Identity\Application\Service\Actor;
+use Watchdog\Identity\Application\Service\RoleResolver;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\User\UserId;
+use Watchdog\Shared\Domain\Permission;
+use Watchdog\Tests\Double\InMemoryRoleRepository;
+use Watchdog\Tests\Double\InMemoryUserRepository;
 
 abstract class AclTestCase extends TestCase
 {

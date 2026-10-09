@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Project\Application\Command\RenameProject;
+namespace Watchdog\Project\Application\Command\RenameProject;
 
 final readonly class RenameProject
 {

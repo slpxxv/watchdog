@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Application\Command\DeleteRole;
+namespace Watchdog\Identity\Application\Command\DeleteRole;
 
-use App\Identity\Domain\Role\RoleId;
+use Watchdog\Identity\Domain\Role\RoleId;
 
 final readonly class DeleteRole
 {

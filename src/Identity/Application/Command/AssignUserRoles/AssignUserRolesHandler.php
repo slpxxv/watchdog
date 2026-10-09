@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Application\Command\AssignUserRoles;
+namespace Watchdog\Identity\Application\Command\AssignUserRoles;
 
-use App\Identity\Application\Service\Actor;
-use App\Identity\Application\Service\RoleResolver;
-use App\Identity\Domain\Role\Role;
-use App\Identity\Domain\User\Exception\LastSuperAdmin;
-use App\Identity\Domain\User\Exception\PrivilegeEscalation;
-use App\Identity\Domain\User\Exception\UserNotFound;
-use App\Identity\Domain\User\UserRepository;
+use Watchdog\Identity\Application\Service\Actor;
+use Watchdog\Identity\Application\Service\RoleResolver;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\User\Exception\LastSuperAdmin;
+use Watchdog\Identity\Domain\User\Exception\PrivilegeEscalation;
+use Watchdog\Identity\Domain\User\Exception\UserNotFound;
+use Watchdog\Identity\Domain\User\UserRepository;
 
 final readonly class AssignUserRolesHandler
 {

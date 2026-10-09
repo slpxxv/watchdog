@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Identity\Infrastructure\Security;
+namespace Watchdog\Tests\Unit\Identity\Infrastructure\Security;
 
-use App\Identity\Infrastructure\Security\SecurityUser;
-use App\Identity\Infrastructure\Security\SecurityUserProvider;
-use App\Shared\Domain\Permission;
-use App\Tests\Double\Identities;
-use App\Tests\Double\InMemoryUserRepository;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\InMemoryUser;
+use Watchdog\Identity\Infrastructure\Security\SecurityUser;
+use Watchdog\Identity\Infrastructure\Security\SecurityUserProvider;
+use Watchdog\Shared\Domain\Permission;
+use Watchdog\Tests\Double\Identities;
+use Watchdog\Tests\Double\InMemoryUserRepository;
 
 final class SecurityUserProviderTest extends TestCase
 {

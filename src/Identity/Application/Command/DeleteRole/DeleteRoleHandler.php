@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Application\Command\DeleteRole;
+namespace Watchdog\Identity\Application\Command\DeleteRole;
 
-use App\Identity\Domain\Role\Exception\CannotDeleteSystemRole;
-use App\Identity\Domain\Role\Exception\RoleNotFound;
-use App\Identity\Domain\Role\RoleRepository;
+use Watchdog\Identity\Domain\Role\Exception\CannotDeleteSystemRole;
+use Watchdog\Identity\Domain\Role\Exception\RoleNotFound;
+use Watchdog\Identity\Domain\Role\RoleRepository;
 
 final readonly class DeleteRoleHandler
 {

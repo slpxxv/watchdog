@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Shared\UI\Http\Problem;
+namespace Watchdog\Tests\Unit\Shared\UI\Http\Problem;
 
-use App\Identity\Application\Exception\WeakPassword;
-use App\Identity\Domain\Role\Exception\CannotDeleteSystemRole;
-use App\Identity\Domain\Role\Exception\RoleAlreadyExists;
-use App\Identity\Domain\Role\Exception\RoleNotFound;
-use App\Identity\Domain\User\Email;
-use App\Identity\Domain\User\Exception\PrivilegeEscalation;
-use App\Identity\Domain\User\Exception\UserAlreadyExists;
-use App\Identity\Domain\User\Exception\UserNotFound;
-use App\Identity\Domain\User\UserId;
-use App\Shared\Domain\Error\DomainError;
-use App\Shared\UI\Http\Problem\DomainErrorMapper;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Watchdog\Identity\Application\Exception\WeakPassword;
+use Watchdog\Identity\Domain\Role\Exception\CannotDeleteSystemRole;
+use Watchdog\Identity\Domain\Role\Exception\RoleAlreadyExists;
+use Watchdog\Identity\Domain\Role\Exception\RoleNotFound;
+use Watchdog\Identity\Domain\User\Email;
+use Watchdog\Identity\Domain\User\Exception\PrivilegeEscalation;
+use Watchdog\Identity\Domain\User\Exception\UserAlreadyExists;
+use Watchdog\Identity\Domain\User\Exception\UserNotFound;
+use Watchdog\Identity\Domain\User\UserId;
+use Watchdog\Shared\Domain\Error\DomainError;
+use Watchdog\Shared\UI\Http\Problem\DomainErrorMapper;
 
 final class DomainErrorMapperTest extends TestCase
 {

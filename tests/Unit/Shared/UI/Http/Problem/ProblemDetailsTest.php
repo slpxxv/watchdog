@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Shared\UI\Http\Problem;
+namespace Watchdog\Tests\Unit\Shared\UI\Http\Problem;
 
-use App\Shared\UI\Http\Problem\ProblemDetails;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
+use Watchdog\Shared\UI\Http\Problem\ProblemDetails;
 
 final class ProblemDetailsTest extends TestCase
 {

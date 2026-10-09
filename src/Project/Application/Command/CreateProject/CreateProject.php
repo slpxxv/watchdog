@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Project\Application\Command\CreateProject;
+namespace Watchdog\Project\Application\Command\CreateProject;
 
 final readonly class CreateProject
 {

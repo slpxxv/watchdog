@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Application\Command\CreateRole;
+namespace Watchdog\Identity\Application\Command\CreateRole;
 
-use App\Identity\Application\Service\Actor;
-use App\Identity\Domain\Role\Exception\RoleAlreadyExists;
-use App\Identity\Domain\Role\Role;
-use App\Identity\Domain\Role\RoleId;
-use App\Identity\Domain\Role\RoleRepository;
+use Watchdog\Identity\Application\Service\Actor;
+use Watchdog\Identity\Domain\Role\Exception\RoleAlreadyExists;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\Role\RoleId;
+use Watchdog\Identity\Domain\Role\RoleRepository;
 
 final readonly class CreateRoleHandler
 {

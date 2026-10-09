@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\UI\Http;
+namespace Watchdog\Identity\UI\Http;
 
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\Response;

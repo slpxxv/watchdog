@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Identity\Infrastructure\Security;
+namespace Watchdog\Tests\Unit\Identity\Infrastructure\Security;
 
-use App\Identity\Infrastructure\Security\SecurityCurrentActor;
-use App\Identity\Infrastructure\Security\SecurityUser;
-use App\Tests\Double\Identities;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\User\InMemoryUser;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Watchdog\Identity\Infrastructure\Security\SecurityCurrentActor;
+use Watchdog\Identity\Infrastructure\Security\SecurityUser;
+use Watchdog\Tests\Double\Identities;
 
 final class SecurityCurrentActorTest extends TestCase
 {

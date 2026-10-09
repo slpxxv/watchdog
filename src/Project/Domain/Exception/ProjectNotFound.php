@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Project\Domain\Exception;
+namespace Watchdog\Project\Domain\Exception;
 
-use App\Project\Domain\ProjectId;
-use App\Shared\Domain\Error\DomainError;
-use App\Shared\Domain\Error\NotFound;
+use Watchdog\Project\Domain\ProjectId;
+use Watchdog\Shared\Domain\Error\DomainError;
+use Watchdog\Shared\Domain\Error\NotFound;
 
 final class ProjectNotFound extends DomainError implements NotFound
 {

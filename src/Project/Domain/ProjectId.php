@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Project\Domain;
+namespace Watchdog\Project\Domain;
 
-use App\Shared\Domain\Uuid;
+use Watchdog\Shared\Domain\Uuid;
 
 final readonly class ProjectId extends Uuid
 {

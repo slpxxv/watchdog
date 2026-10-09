@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Project\Domain;
+namespace Watchdog\Tests\Unit\Project\Domain;
 
-use App\Project\Domain\Exception\InvalidProjectName;
-use App\Project\Domain\Project;
-use App\Project\Domain\ProjectId;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
+use Watchdog\Project\Domain\Exception\InvalidProjectName;
+use Watchdog\Project\Domain\Project;
+use Watchdog\Project\Domain\ProjectId;
 
 final class ProjectTest extends TestCase
 {

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Project\Domain\Exception;
+namespace Watchdog\Project\Domain\Exception;
 
-use App\Project\Domain\Project;
-use App\Shared\Domain\Error\DomainError;
+use Watchdog\Project\Domain\Project;
+use Watchdog\Shared\Domain\Error\DomainError;
 
 final class InvalidProjectName extends DomainError
 {

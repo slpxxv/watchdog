@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Infrastructure\Security;
+namespace Watchdog\Identity\Infrastructure\Security;
 
-use App\Identity\Domain\User\Email;
-use App\Identity\Domain\User\Exception\InvalidEmail;
-use App\Identity\Domain\User\UserId;
-use App\Identity\Domain\User\UserRepository;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Watchdog\Identity\Domain\User\Email;
+use Watchdog\Identity\Domain\User\Exception\InvalidEmail;
+use Watchdog\Identity\Domain\User\UserId;
+use Watchdog\Identity\Domain\User\UserRepository;
 
 /**
  * @implements UserProviderInterface<SecurityUser>

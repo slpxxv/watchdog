@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Integration\Project;
+namespace Watchdog\Tests\Integration\Project;
 
-use App\Project\Domain\Project;
-use App\Project\Domain\ProjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Watchdog\Project\Domain\Project;
+use Watchdog\Project\Domain\ProjectRepository;
 
 final class DoctrineProjectRepositoryTest extends KernelTestCase
 {

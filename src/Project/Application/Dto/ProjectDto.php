@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Project\Application\Dto;
+namespace Watchdog\Project\Application\Dto;
 
-use App\Project\Domain\Project;
+use Watchdog\Project\Domain\Project;
 
 final readonly class ProjectDto
 {

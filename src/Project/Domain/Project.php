@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Project\Domain;
+namespace Watchdog\Project\Domain;
 
-use App\Project\Domain\Exception\InvalidProjectName;
+use Watchdog\Project\Domain\Exception\InvalidProjectName;
 
 class Project
 {

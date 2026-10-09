@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Shared\UI\Http\Problem;
+namespace Watchdog\Shared\UI\Http\Problem;
 
-use App\Shared\Domain\Error\Conflict;
-use App\Shared\Domain\Error\DomainError;
-use App\Shared\Domain\Error\Forbidden;
-use App\Shared\Domain\Error\NotFound;
 use Symfony\Component\HttpFoundation\Response;
+use Watchdog\Shared\Domain\Error\Conflict;
+use Watchdog\Shared\Domain\Error\DomainError;
+use Watchdog\Shared\Domain\Error\Forbidden;
+use Watchdog\Shared\Domain\Error\NotFound;
 
 final readonly class DomainErrorMapper
 {

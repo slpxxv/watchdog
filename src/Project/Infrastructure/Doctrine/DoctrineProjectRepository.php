@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Project\Infrastructure\Doctrine;
+namespace Watchdog\Project\Infrastructure\Doctrine;
 
-use App\Project\Domain\Project;
-use App\Project\Domain\ProjectId;
-use App\Project\Domain\ProjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Uid\Uuid;
+use Watchdog\Project\Domain\Project;
+use Watchdog\Project\Domain\ProjectId;
+use Watchdog\Project\Domain\ProjectRepository;
 
 final readonly class DoctrineProjectRepository implements ProjectRepository
 {

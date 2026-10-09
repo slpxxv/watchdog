@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\User;
+namespace Watchdog\Identity\Domain\User;
 
-use App\Identity\Domain\Role\Role;
-use App\Identity\Domain\User\Exception\PrivilegeEscalation;
-use App\Shared\Domain\Permission;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\User\Exception\PrivilegeEscalation;
+use Watchdog\Shared\Domain\Permission;
 
 class User
 {

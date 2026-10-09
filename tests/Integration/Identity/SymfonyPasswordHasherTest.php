@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Integration\Identity;
+namespace Watchdog\Tests\Integration\Identity;
 
-use App\Identity\Application\Port\PasswordHasher;
-use App\Identity\Infrastructure\Security\SecurityUser;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
+use Watchdog\Identity\Application\Port\PasswordHasher;
+use Watchdog\Identity\Infrastructure\Security\SecurityUser;
 
 final class SymfonyPasswordHasherTest extends KernelTestCase
 {

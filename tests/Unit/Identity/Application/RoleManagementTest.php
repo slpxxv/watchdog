@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Identity\Application;
+namespace Watchdog\Tests\Unit\Identity\Application;
 
-use App\Identity\Application\Command\CreateRole\CreateRole;
-use App\Identity\Application\Command\CreateRole\CreateRoleHandler;
-use App\Identity\Application\Command\DeleteRole\DeleteRole;
-use App\Identity\Application\Command\DeleteRole\DeleteRoleHandler;
-use App\Identity\Application\Command\UpdateRole\UpdateRole;
-use App\Identity\Application\Command\UpdateRole\UpdateRoleHandler;
-use App\Identity\Domain\Role\Exception\CannotDeleteSystemRole;
-use App\Identity\Domain\Role\Exception\InvalidRoleCode;
-use App\Identity\Domain\Role\Exception\RoleAlreadyExists;
-use App\Identity\Domain\Role\Role;
-use App\Identity\Domain\User\Exception\PrivilegeEscalation;
-use App\Shared\Domain\Permission;
+use Watchdog\Identity\Application\Command\CreateRole\CreateRole;
+use Watchdog\Identity\Application\Command\CreateRole\CreateRoleHandler;
+use Watchdog\Identity\Application\Command\DeleteRole\DeleteRole;
+use Watchdog\Identity\Application\Command\DeleteRole\DeleteRoleHandler;
+use Watchdog\Identity\Application\Command\UpdateRole\UpdateRole;
+use Watchdog\Identity\Application\Command\UpdateRole\UpdateRoleHandler;
+use Watchdog\Identity\Domain\Role\Exception\CannotDeleteSystemRole;
+use Watchdog\Identity\Domain\Role\Exception\InvalidRoleCode;
+use Watchdog\Identity\Domain\Role\Exception\RoleAlreadyExists;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\User\Exception\PrivilegeEscalation;
+use Watchdog\Shared\Domain\Permission;
 
 final class RoleManagementTest extends AclTestCase
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Shared\Domain;
+namespace Watchdog\Shared\Domain;
 
 enum Permission: string
 {

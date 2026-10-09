@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Infrastructure\Security;
+namespace Watchdog\Identity\Infrastructure\Security;
 
-use App\Identity\Application\Port\PasswordHasher;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
+use Watchdog\Identity\Application\Port\PasswordHasher;
 
 final readonly class SymfonyPasswordHasher implements PasswordHasher
 {

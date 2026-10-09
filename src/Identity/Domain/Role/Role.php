@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\Role;
+namespace Watchdog\Identity\Domain\Role;
 
-use App\Identity\Domain\Role\Exception\InvalidRoleCode;
-use App\Shared\Domain\Permission;
+use Watchdog\Identity\Domain\Role\Exception\InvalidRoleCode;
+use Watchdog\Shared\Domain\Permission;
 
 class Role
 {

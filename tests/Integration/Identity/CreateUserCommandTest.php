@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Integration\Identity;
+namespace Watchdog\Tests\Integration\Identity;
 
-use App\Identity\Domain\Role\Role;
-use App\Identity\Domain\User\Email;
-use App\Identity\Domain\User\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\User\Email;
+use Watchdog\Identity\Domain\User\UserRepository;
 
 final class CreateUserCommandTest extends KernelTestCase
 {

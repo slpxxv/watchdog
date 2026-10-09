@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Project\UI\Http\Request;
+namespace Watchdog\Project\UI\Http\Request;
 
-use App\Project\Domain\Project;
 use Symfony\Component\Validator\Constraints as Assert;
+use Watchdog\Project\Domain\Project;
 
 final readonly class RenameProjectRequest
 {

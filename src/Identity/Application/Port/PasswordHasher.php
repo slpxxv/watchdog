@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Application\Port;
+namespace Watchdog\Identity\Application\Port;
 
 interface PasswordHasher
 {

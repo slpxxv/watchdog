@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\User\Exception;
+namespace Watchdog\Identity\Domain\User\Exception;
 
-use App\Shared\Domain\Error\DomainError;
+use Watchdog\Shared\Domain\Error\DomainError;
 
 final class InvalidEmail extends DomainError
 {

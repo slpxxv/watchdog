@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Project\Application\Query\GetProject;
+namespace Watchdog\Project\Application\Query\GetProject;
 
-use App\Project\Application\Dto\ProjectDto;
-use App\Project\Domain\Exception\ProjectNotFound;
-use App\Project\Domain\ProjectId;
-use App\Project\Domain\ProjectRepository;
+use Watchdog\Project\Application\Dto\ProjectDto;
+use Watchdog\Project\Domain\Exception\ProjectNotFound;
+use Watchdog\Project\Domain\ProjectId;
+use Watchdog\Project\Domain\ProjectRepository;
 
 final readonly class GetProjectHandler
 {

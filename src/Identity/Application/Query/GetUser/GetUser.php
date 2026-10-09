@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Application\Query\GetUser;
+namespace Watchdog\Identity\Application\Query\GetUser;
 
-use App\Identity\Domain\User\UserId;
+use Watchdog\Identity\Domain\User\UserId;
 
 final readonly class GetUser
 {

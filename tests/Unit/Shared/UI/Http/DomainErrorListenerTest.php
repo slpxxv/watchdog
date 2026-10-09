@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Shared\UI\Http;
+namespace Watchdog\Tests\Unit\Shared\UI\Http;
 
-use App\Identity\Domain\Role\Exception\RoleNotFound;
-use App\Shared\UI\Http\DomainErrorListener;
-use App\Shared\UI\Http\Problem\DomainErrorMapper;
-use App\Shared\UI\Http\Problem\ProblemDetails;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Watchdog\Identity\Domain\Role\Exception\RoleNotFound;
+use Watchdog\Shared\UI\Http\DomainErrorListener;
+use Watchdog\Shared\UI\Http\Problem\DomainErrorMapper;
+use Watchdog\Shared\UI\Http\Problem\ProblemDetails;
 
 final class DomainErrorListenerTest extends TestCase
 {

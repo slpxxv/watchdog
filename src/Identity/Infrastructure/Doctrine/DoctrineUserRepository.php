@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Infrastructure\Doctrine;
+namespace Watchdog\Identity\Infrastructure\Doctrine;
 
-use App\Identity\Domain\User\Email;
-use App\Identity\Domain\User\User;
-use App\Identity\Domain\User\UserId;
-use App\Identity\Domain\User\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Uid\Uuid;
+use Watchdog\Identity\Domain\User\Email;
+use Watchdog\Identity\Domain\User\User;
+use Watchdog\Identity\Domain\User\UserId;
+use Watchdog\Identity\Domain\User\UserRepository;
 
 final readonly class DoctrineUserRepository implements UserRepository
 {

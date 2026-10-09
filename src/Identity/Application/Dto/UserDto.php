@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Application\Dto;
+namespace Watchdog\Identity\Application\Dto;
 
-use App\Identity\Domain\Role\Role;
-use App\Identity\Domain\User\User;
-use App\Shared\Domain\Permission;
+use Watchdog\Identity\Domain\Role\Role;
+use Watchdog\Identity\Domain\User\User;
+use Watchdog\Shared\Domain\Permission;
 
 final readonly class UserDto
 {

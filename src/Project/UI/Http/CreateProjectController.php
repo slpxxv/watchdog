@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\Project\UI\Http;
+namespace Watchdog\Project\UI\Http;
 
-use App\Project\Application\Command\CreateProject\CreateProject;
-use App\Project\Application\Command\CreateProject\CreateProjectHandler;
-use App\Project\Application\Query\GetProject\GetProject;
-use App\Project\Application\Query\GetProject\GetProjectHandler;
-use App\Project\UI\Http\Request\CreateProjectRequest;
-use App\Shared\Domain\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Watchdog\Project\Application\Command\CreateProject\CreateProject;
+use Watchdog\Project\Application\Command\CreateProject\CreateProjectHandler;
+use Watchdog\Project\Application\Query\GetProject\GetProject;
+use Watchdog\Project\Application\Query\GetProject\GetProjectHandler;
+use Watchdog\Project\UI\Http\Request\CreateProjectRequest;
+use Watchdog\Shared\Domain\Permission;
 
 final class CreateProjectController extends AbstractController
 {

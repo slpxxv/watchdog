@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\User;
+namespace Watchdog\Identity\Domain\User;
 
-use App\Identity\Domain\User\Exception\InvalidEmail;
+use Watchdog\Identity\Domain\User\Exception\InvalidEmail;
 
 final readonly class Email
 {

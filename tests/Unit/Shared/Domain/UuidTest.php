@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Shared\Domain;
+namespace Watchdog\Tests\Unit\Shared\Domain;
 
-use App\Identity\Domain\Role\RoleId;
-use App\Identity\Domain\User\UserId;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
+use Watchdog\Identity\Domain\Role\RoleId;
+use Watchdog\Identity\Domain\User\UserId;
 
 final class UuidTest extends TestCase
 {

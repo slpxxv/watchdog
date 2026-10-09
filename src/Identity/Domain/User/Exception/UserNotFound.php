@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Identity\Domain\User\Exception;
+namespace Watchdog\Identity\Domain\User\Exception;
 
-use App\Identity\Domain\User\UserId;
-use App\Shared\Domain\Error\DomainError;
-use App\Shared\Domain\Error\NotFound;
+use Watchdog\Identity\Domain\User\UserId;
+use Watchdog\Shared\Domain\Error\DomainError;
+use Watchdog\Shared\Domain\Error\NotFound;
 
 final class UserNotFound extends DomainError implements NotFound
 {

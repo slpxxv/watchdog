@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Project\UI\Http;
+namespace Watchdog\Project\UI\Http;
 
-use App\Project\Application\Query\ListProjects\ListProjects;
-use App\Project\Application\Query\ListProjects\ListProjectsHandler;
-use App\Shared\Domain\Permission;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Watchdog\Project\Application\Query\ListProjects\ListProjects;
+use Watchdog\Project\Application\Query\ListProjects\ListProjectsHandler;
+use Watchdog\Shared\Domain\Permission;
 
 final class ListProjectsController extends AbstractController
 {
