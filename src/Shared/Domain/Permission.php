@@ -10,4 +10,6 @@ enum Permission: string
     case UserManage = 'user.manage';
     case RoleView = 'role.view';
     case RoleManage = 'role.manage';
+    case ProjectView = 'project.view';
+    case ProjectManage = 'project.manage';
 }

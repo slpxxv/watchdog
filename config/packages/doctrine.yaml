@@ -16,6 +16,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Identity/Infrastructure/Doctrine/Mapping'
                 prefix: 'App\Identity\Domain'
                 alias: Identity
+            Project:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Project/Infrastructure/Doctrine/Mapping'
+                prefix: 'App\Project\Domain'
+                alias: Project
 
 when@test:
     doctrine:
