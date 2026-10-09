@@ -35,7 +35,12 @@ final readonly class ProblemDetails
      */
     public static function forStatus(int $status, ?string $detail = null, array $extensions = []): self
     {
-        return new self($status, Response::$statusTexts[$status] ?? 'Error', $detail, extensions: $extensions);
+        return new self(
+            status: $status,
+            title: Response::$statusTexts[$status] ?? 'Error',
+            detail: $detail,
+            extensions: $extensions,
+        );
     }
 
     /**

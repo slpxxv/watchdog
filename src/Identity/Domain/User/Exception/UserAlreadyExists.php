@@ -12,6 +12,10 @@ final class UserAlreadyExists extends DomainError implements Conflict
 {
     public static function withEmail(Email $email): self
     {
-        return new self(\sprintf('User with email "%s" already exists.', $email->value), 'identity.user.already_exists', ['%email%' => $email->value]);
+        return new self(
+            message: \sprintf('User with email "%s" already exists.', $email->value),
+            messageKey: 'identity.user.already_exists',
+            messageParameters: ['%email%' => $email->value],
+        );
     }
 }

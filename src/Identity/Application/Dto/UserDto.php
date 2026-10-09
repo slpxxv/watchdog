@@ -29,11 +29,11 @@ final readonly class UserDto
         sort($roles); // the DB returns the role collection in no particular order
 
         return new self(
-            $user->id()->value,
-            $user->email()->value,
-            $roles,
-            array_map(static fn (Permission $p): string => $p->value, $user->permissions()),
-            $user->createdAt()->format(\DATE_ATOM),
+            id: $user->id()->value,
+            email: $user->email()->value,
+            roles: $roles,
+            permissions: array_map(static fn (Permission $p): string => $p->value, $user->permissions()),
+            createdAt: $user->createdAt()->format(\DATE_ATOM),
         );
     }
 }

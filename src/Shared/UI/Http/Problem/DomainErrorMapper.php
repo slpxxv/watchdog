@@ -24,10 +24,14 @@ final readonly class DomainErrorMapper
 
     public function map(DomainError $error): ProblemDetails
     {
-        return ProblemDetails::forStatus($this->statusOf($error), $error->getMessage(), [
-            self::MESSAGE_KEY => $error->messageKey,
-            self::MESSAGE_PARAMETERS => $error->messageParameters,
-        ]);
+        return ProblemDetails::forStatus(
+            status: $this->statusOf($error),
+            detail: $error->getMessage(),
+            extensions: [
+                self::MESSAGE_KEY => $error->messageKey,
+                self::MESSAGE_PARAMETERS => $error->messageParameters,
+            ],
+        );
     }
 
     public function statusOf(DomainError $error): int

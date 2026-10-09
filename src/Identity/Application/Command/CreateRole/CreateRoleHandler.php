@@ -26,7 +26,12 @@ final readonly class CreateRoleHandler
             throw RoleAlreadyExists::withCode($command->code);
         }
 
-        $role = Role::create($this->roles->nextIdentity(), $command->code, $command->name, $command->permissions);
+        $role = Role::create(
+            id: $this->roles->nextIdentity(),
+            code: $command->code,
+            name: $command->name,
+            permissions: $command->permissions,
+        );
         $this->roles->save($role);
 
         return $role->id();

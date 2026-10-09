@@ -12,6 +12,10 @@ final class UserNotFound extends DomainError implements NotFound
 {
     public static function withId(UserId $id): self
     {
-        return new self(\sprintf('User "%s" not found.', $id->value), 'identity.user.not_found', ['%id%' => $id->value]);
+        return new self(
+            message: \sprintf('User "%s" not found.', $id->value),
+            messageKey: 'identity.user.not_found',
+            messageParameters: ['%id%' => $id->value],
+        );
     }
 }

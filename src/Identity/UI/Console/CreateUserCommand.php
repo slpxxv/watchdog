@@ -40,7 +40,11 @@ final readonly class CreateUserCommand
         $roles = [Role::USER, ...$role, ...($admin ? [Role::SUPER_ADMIN] : [])];
 
         try {
-            $id = ($this->handler)(new CreateUser($email, $password, $roles));
+            $id = ($this->handler)(new CreateUser(
+                email: $email,
+                plainPassword: $password,
+                roleCodes: $roles,
+            ));
         } catch (DomainError $e) {
             $io->error($e->getMessage());
 

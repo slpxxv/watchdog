@@ -35,11 +35,11 @@ final readonly class SecurityUser implements UserInterface, PasswordAuthenticate
         $email = $user->email()->value;
 
         return new self(
-            $user->id()->value,
-            $email,
-            $user->passwordHash(),
-            $user->isSuperAdmin(),
-            array_map(static fn (Permission $p): string => $p->value, $user->permissions()),
+            id: $user->id()->value,
+            email: $email,
+            password: $user->passwordHash(),
+            superAdmin: $user->isSuperAdmin(),
+            permissions: array_map(static fn (Permission $p): string => $p->value, $user->permissions()),
         );
     }
 

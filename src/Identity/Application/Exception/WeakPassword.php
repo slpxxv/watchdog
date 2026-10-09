@@ -10,6 +10,10 @@ final class WeakPassword extends DomainError
 {
     public static function tooShort(int $min): self
     {
-        return new self(\sprintf('Password must be at least %d characters long.', $min), 'identity.password.too_short', ['%min%' => $min]);
+        return new self(
+            message: \sprintf('Password must be at least %d characters long.', $min),
+            messageKey: 'identity.password.too_short',
+            messageParameters: ['%min%' => $min],
+        );
     }
 }

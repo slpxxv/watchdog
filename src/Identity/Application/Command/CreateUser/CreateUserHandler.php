@@ -39,12 +39,13 @@ final readonly class CreateUserHandler
         }
 
         $user = User::register(
-            $this->users->nextIdentity(),
-            $email,
-            $this->hasher->hash($command->plainPassword),
-            $this->roles->byCodes($command->roleCodes),
-            $this->clock->now(),
+            id: $this->users->nextIdentity(),
+            email: $email,
+            passwordHash: $this->hasher->hash($command->plainPassword),
+            roles: $this->roles->byCodes($command->roleCodes),
+            now: $this->clock->now(),
         );
+
         $this->users->save($user);
 
         return $user->id();

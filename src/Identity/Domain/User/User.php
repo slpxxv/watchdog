@@ -37,7 +37,12 @@ class User
      */
     public static function register(UserId $id, Email $email, string $passwordHash, array $roles, \DateTimeImmutable $now): self
     {
-        $user = new self($id, $email, $passwordHash, $now);
+        $user = new self(
+            id: $id,
+            email: $email,
+            passwordHash: $passwordHash,
+            createdAt: $now,
+        );
         $user->assignRoles($roles);
 
         return $user;
