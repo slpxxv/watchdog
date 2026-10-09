@@ -28,3 +28,5 @@ button.secondary { background: transparent; color: var(--accent); border: 1px so
 .list th { width: auto; }
 .actions { text-align: right; width: 1%; white-space: nowrap; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+button.danger { color: var(--danger); }
+.actions button + button { margin-left: .5rem; }

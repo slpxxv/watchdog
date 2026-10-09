@@ -51,6 +51,15 @@ final class DoctrineProjectRepositoryTest extends KernelTestCase
         self::assertSame('Renamed', $this->projects->ofId($project->id())?->name());
     }
 
+    public function testRemoveDeletesRow(): void
+    {
+        $project = $this->project('Watchdog');
+        $this->projects->remove($project);
+        $this->em->clear();
+
+        self::assertNull($this->projects->ofId($project->id()));
+    }
+
     public function testUnknownIdReturnsNull(): void
     {
         self::assertNull($this->projects->ofId($this->projects->nextIdentity()));

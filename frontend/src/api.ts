@@ -72,3 +72,8 @@ export async function createProject(name: string): Promise<Project> {
 export async function renameProject(id: string, name: string): Promise<Project> {
   return body(await api(`/projects/${id}`, { method: 'PATCH', body: JSON.stringify({ name }) }))
 }
+
+export async function deleteProject(id: string): Promise<void> {
+  const res = await api(`/projects/${id}`, { method: 'DELETE' })
+  if (!res.ok) await body(res) // throws the mapped error
+}

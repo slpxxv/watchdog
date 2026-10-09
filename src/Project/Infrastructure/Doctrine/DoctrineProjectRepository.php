@@ -35,6 +35,12 @@ final readonly class DoctrineProjectRepository implements ProjectRepository
         $this->em->flush();
     }
 
+    public function remove(Project $project): void
+    {
+        $this->em->remove($project);
+        $this->em->flush();
+    }
+
     public function all(): array
     {
         /** @var list<Project> */

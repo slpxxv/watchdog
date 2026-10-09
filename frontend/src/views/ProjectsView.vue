@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { createProject, listProjects, me, renameProject, type Me, type Project } from '../api'
+import { createProject, deleteProject, listProjects, me, renameProject, type Me, type Project } from '../api'
 
 const MAX_NAME_LENGTH = 100 // mirrors Project::MAX_NAME_LENGTH
 
@@ -50,6 +50,14 @@ function startEditing(project: Project) {
   editName.value = project.name
 }
 
+function remove(project: Project) {
+  if (!confirm(`Usunąć projekt „${project.name}”? Tej operacji nie można cofnąć.`)) return
+  return run(async () => {
+    await deleteProject(project.id)
+    projects.value = projects.value?.filter((p) => p.id !== project.id) ?? null
+  })
+}
+
 function rename(project: Project) {
   return run(async () => {
     Object.assign(project, await renameProject(project.id, editName.value.trim()))
@@ -89,6 +97,7 @@ function rename(project: Project) {
             <td>{{ new Date(project.createdAt).toLocaleString('pl-PL') }}</td>
             <td v-if="canManage" class="actions">
               <button type="button" class="secondary" @click="startEditing(project)">Zmień nazwę</button>
+              <button type="button" class="secondary danger" :disabled="pending" @click="remove(project)">Usuń</button>
             </td>
           </template>
         </tr>

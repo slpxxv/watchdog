@@ -12,6 +12,8 @@ interface ProjectRepository
 
     public function save(Project $project): void;
 
+    public function remove(Project $project): void;
+
     /**
      * @return list<Project>
      */

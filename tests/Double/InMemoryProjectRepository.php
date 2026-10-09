@@ -29,6 +29,11 @@ final class InMemoryProjectRepository implements ProjectRepository
         $this->projects[$project->id()->value] = $project;
     }
 
+    public function remove(Project $project): void
+    {
+        unset($this->projects[$project->id()->value]);
+    }
+
     public function all(): array
     {
         return array_values($this->projects);

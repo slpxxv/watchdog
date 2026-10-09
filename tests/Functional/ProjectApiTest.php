@@ -66,6 +66,12 @@ final class ProjectApiTest extends WebTestCase
         $this->client->request('GET', '/api/projects');
         self::assertResponseIsSuccessful();
         self::assertSame([$id], array_column($this->json(), 'id'));
+
+        $this->client->request('DELETE', '/api/projects/'.$id);
+        self::assertResponseStatusCodeSame(204);
+
+        $this->client->request('GET', '/api/projects/'.$id);
+        self::assertResponseStatusCodeSame(404);
     }
 
     public function testInvalidNameIsRejected(): void
@@ -88,6 +94,9 @@ final class ProjectApiTest extends WebTestCase
 
         $this->client->jsonRequest('PATCH', '/api/projects/01890000-0000-7000-8000-000000000000', ['name' => 'x']);
         self::assertResponseStatusCodeSame(404);
+
+        $this->client->request('DELETE', '/api/projects/01890000-0000-7000-8000-000000000000');
+        self::assertResponseStatusCodeSame(404);
     }
 
     public function testUserWithoutPermissionIsForbidden(): void
@@ -98,6 +107,9 @@ final class ProjectApiTest extends WebTestCase
         self::assertResponseStatusCodeSame(403);
 
         $this->client->jsonRequest('POST', '/api/projects', ['name' => 'Nope']);
+        self::assertResponseStatusCodeSame(403);
+
+        $this->client->request('DELETE', '/api/projects/01890000-0000-7000-8000-000000000000');
         self::assertResponseStatusCodeSame(403);
     }
 }

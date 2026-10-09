@@ -8,6 +8,8 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Clock\MockClock;
 use Watchdog\Project\Application\Command\CreateProject\CreateProject;
 use Watchdog\Project\Application\Command\CreateProject\CreateProjectHandler;
+use Watchdog\Project\Application\Command\DeleteProject\DeleteProject;
+use Watchdog\Project\Application\Command\DeleteProject\DeleteProjectHandler;
 use Watchdog\Project\Application\Command\RenameProject\RenameProject;
 use Watchdog\Project\Application\Command\RenameProject\RenameProjectHandler;
 use Watchdog\Project\Application\Dto\ProjectDto;
@@ -60,6 +62,23 @@ final class ProjectHandlersTest extends TestCase
     {
         $this->expectException(ProjectNotFound::class);
         (new RenameProjectHandler($this->projects))(new RenameProject(self::UNKNOWN_ID, 'Renamed'));
+    }
+
+    public function testDeleteRemovesProject(): void
+    {
+        $kept = $this->create('Kept');
+        $deleted = $this->create('Deleted');
+
+        (new DeleteProjectHandler($this->projects))(new DeleteProject($deleted->value));
+
+        self::assertNull($this->projects->ofId($deleted));
+        self::assertNotNull($this->projects->ofId($kept));
+    }
+
+    public function testDeleteUnknownProjectThrows(): void
+    {
+        $this->expectException(ProjectNotFound::class);
+        (new DeleteProjectHandler($this->projects))(new DeleteProject(self::UNKNOWN_ID));
     }
 
     public function testGetReturnsDto(): void
