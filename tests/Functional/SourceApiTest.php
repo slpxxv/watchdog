@@ -7,10 +7,13 @@ namespace Watchdog\Tests\Functional;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\Transport\InMemory\InMemoryTransport;
 use Watchdog\Identity\Application\Command\CreateUser\CreateUser;
 use Watchdog\Identity\Application\Command\CreateUser\CreateUserHandler;
 use Watchdog\Identity\Domain\Role\Role;
 use Watchdog\Identity\Domain\Role\RoleRepository;
+use Watchdog\Logging\Application\Command\PurgeProjectLogs\PurgeProjectLogs;
 use Watchdog\Logging\Domain\Source\SourceRepository;
 use Watchdog\Logging\Domain\Source\SourceToken;
 use Watchdog\Shared\Domain\Permission;
@@ -125,7 +128,7 @@ final class SourceApiTest extends WebTestCase
         self::assertSame('source.revoked', $this->json()['messageKey']);
     }
 
-    public function testDeletingTheProjectRevokesItsSources(): void
+    public function testDeletingTheProjectRevokesItsSourcesAndQueuesTheLogPurge(): void
     {
         $this->logIn(self::ADMIN);
         $projectId = $this->createProject();
@@ -137,6 +140,11 @@ final class SourceApiTest extends WebTestCase
         $stored = $this->sourceByToken($source['token']);
         self::assertInstanceOf(\Watchdog\Logging\Domain\Source\Source::class, $stored);
         self::assertTrue($stored->isRevoked());
+
+        // Logs go in the background: one purge message queued for the worker.
+        $transport = self::getContainer()->get('messenger.transport.async');
+        self::assertInstanceOf(InMemoryTransport::class, $transport);
+        self::assertEquals([new PurgeProjectLogs($projectId)], array_map(static fn (Envelope $e): object => $e->getMessage(), $transport->getSent()));
     }
 
     public function testUnknownProjectOrSourceIsNotFound(): void

@@ -1,6 +1,8 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
+        # log_entry and its partitions are created by hand-written migrations (the ORM cannot partition).
+        schema_filter: ~^(?!log_entry)~
         profiling_collect_backtrace: '%kernel.debug%'
     orm:
         validate_xml_mapping: true
