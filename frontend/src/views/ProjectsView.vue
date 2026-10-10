@@ -1,18 +1,28 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, useTemplateRef } from 'vue'
 import { useRouter } from 'vue-router'
-import { createProject, deleteProject, listProjects, me, renameProject, type Me, type Project } from '../api'
+import { createProject, deleteProject, listProjects, renameProject, type Project } from '../api'
+import { loadUser, user } from '../session'
 
 const MAX_NAME_LENGTH = 100 // mirrors Project::MAX_NAME_LENGTH
 
 const router = useRouter()
-const user = ref<Me | null>(null)
 const projects = ref<Project[] | null>(null)
 const error = ref('')
 const pending = ref(false)
 const newName = ref('')
 const editingId = ref<string | null>(null)
 const editName = ref('')
+const toDelete = ref<Project | null>(null)
+const confirmDialog = useTemplateRef<HTMLDialogElement>('confirm-dialog')
+
+const plural = new Intl.PluralRules('pl')
+const projectForms: Partial<Record<Intl.LDMLPluralRule, string>> = { one: 'projekt', few: 'projekty' }
+const countLabel = computed(() => {
+  const n = projects.value?.length ?? 0
+  return `${n} ${projectForms[plural.select(n)] ?? 'projektów'}`
+})
+const dateFormat = new Intl.DateTimeFormat('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' })
 
 const canManage = computed(() => user.value?.permissions.includes('project.manage') ?? false)
 
@@ -29,12 +39,11 @@ async function run(action: () => Promise<void>) {
 }
 
 onMounted(() => run(async () => {
-  user.value = await me()
-  if (!user.value) {
+  if (!(await loadUser())) {
     await router.replace({ name: 'login' })
     return
   }
-  if (!user.value.permissions.includes('project.view')) throw new Error('Brak uprawnień do przeglądania projektów.')
+  if (!user.value?.permissions.includes('project.view')) throw new Error('Brak uprawnień do przeglądania projektów.')
   projects.value = await listProjects()
 }))
 
@@ -50,8 +59,18 @@ function startEditing(project: Project) {
   editName.value = project.name
 }
 
-function remove(project: Project) {
-  if (!confirm(`Usunąć projekt „${project.name}”? Tej operacji nie można cofnąć.`)) return
+function askToDelete(project: Project) {
+  toDelete.value = project
+  if (!confirmDialog.value) return
+  confirmDialog.value.returnValue = '' // Esc keeps the previous value; never let it count as a confirm
+  confirmDialog.value.showModal()
+}
+
+function onConfirmClose() {
+  const project = toDelete.value
+  const confirmed = confirmDialog.value?.returnValue === 'confirm'
+  toDelete.value = null
+  if (!project || !confirmed) return
   return run(async () => {
     await deleteProject(project.id)
     projects.value = projects.value?.filter((p) => p.id !== project.id) ?? null
@@ -67,42 +86,56 @@ function rename(project: Project) {
 </script>
 
 <template>
-  <h1>Projekty</h1>
+  <div class="page-head">
+    <div>
+      <h1>Projekty</h1>
+      <p v-if="projects" class="muted">{{ countLabel }}</p>
+    </div>
+  </div>
+
   <p v-if="error" class="alert" role="alert">{{ error }}</p>
 
-  <form v-if="projects && canManage" class="inline" @submit.prevent="create">
-    <label for="new-project" class="visually-hidden">Nazwa nowego projektu</label>
-    <input id="new-project" v-model="newName" placeholder="Nazwa nowego projektu" required pattern=".*\S.*" :maxlength="MAX_NAME_LENGTH">
-    <button type="submit" :disabled="pending">Dodaj projekt</button>
-  </form>
+  <section v-if="projects" class="panel" aria-label="Lista projektów">
+    <form v-if="canManage" class="panel-head inline" @submit.prevent="create">
+      <label for="new-project" class="visually-hidden">Nazwa nowego projektu</label>
+      <input id="new-project" v-model="newName" placeholder="Nazwa nowego projektu" required pattern=".*\S.*" :maxlength="MAX_NAME_LENGTH">
+      <button type="submit" :disabled="pending">Dodaj projekt</button>
+    </form>
 
-  <template v-if="projects">
-    <p v-if="!projects.length" class="muted">Nie ma jeszcze żadnych projektów.</p>
-    <table v-else class="list">
-      <thead>
-        <tr><th>Nazwa</th><th>Utworzony</th><th v-if="canManage"><span class="visually-hidden">Akcje</span></th></tr>
-      </thead>
-      <tbody>
-        <tr v-for="project in projects" :key="project.id">
-          <td v-if="editingId === project.id" :colspan="canManage ? 3 : 2">
-            <form class="inline" @submit.prevent="rename(project)" @keydown.esc="editingId = null">
-              <label :for="`rename-${project.id}`" class="visually-hidden">Nowa nazwa projektu</label>
-              <input :id="`rename-${project.id}`" v-model="editName" required pattern=".*\S.*" :maxlength="MAX_NAME_LENGTH" autofocus>
-              <button type="submit" :disabled="pending">Zapisz</button>
-              <button type="button" class="secondary" @click="editingId = null">Anuluj</button>
-            </form>
-          </td>
-          <template v-else>
-            <td>{{ project.name }}</td>
-            <td>{{ new Date(project.createdAt).toLocaleString('pl-PL') }}</td>
-            <td v-if="canManage" class="actions">
-              <button type="button" class="secondary" @click="startEditing(project)">Zmień nazwę</button>
-              <button type="button" class="secondary danger" :disabled="pending" @click="remove(project)">Usuń</button>
-            </td>
-          </template>
-        </tr>
-      </tbody>
-    </table>
-  </template>
+    <p v-if="!projects.length" class="empty">
+      {{ canManage ? 'Nie masz jeszcze projektów. Wpisz nazwę powyżej, żeby dodać pierwszy.' : 'Nie ma jeszcze żadnych projektów.' }}
+    </p>
+
+    <ul v-else class="rows">
+      <li v-for="project in projects" :key="project.id" class="row">
+        <form v-if="editingId === project.id" class="inline" @submit.prevent="rename(project)" @keydown.esc="editingId = null">
+          <label :for="`rename-${project.id}`" class="visually-hidden">Nowa nazwa projektu „{{ project.name }}”</label>
+          <input :id="`rename-${project.id}`" v-model="editName" required pattern=".*\S.*" :maxlength="MAX_NAME_LENGTH" autofocus>
+          <button type="submit" :disabled="pending">Zapisz</button>
+          <button type="button" class="ghost" @click="editingId = null">Anuluj</button>
+        </form>
+        <template v-else>
+          <span class="row-name">{{ project.name }}</span>
+          <time class="row-meta" :datetime="project.createdAt">{{ dateFormat.format(new Date(project.createdAt)) }}</time>
+          <span v-if="canManage" class="row-actions">
+            <button type="button" class="ghost" @click="startEditing(project)">Zmień nazwę</button>
+            <button type="button" class="ghost danger" :disabled="pending" @click="askToDelete(project)">Usuń</button>
+          </span>
+        </template>
+      </li>
+    </ul>
+  </section>
   <p v-else-if="!error" class="muted">Ładowanie…</p>
+
+  <dialog ref="confirm-dialog" aria-labelledby="confirm-title" @close="onConfirmClose">
+    <form method="dialog">
+      <h2 id="confirm-title">Usunąć projekt?</h2>
+      <p class="muted">Projekt „{{ toDelete?.name }}” zostanie usunięty na stałe.</p>
+      <div class="dialog-actions">
+        <button value="cancel" class="ghost" autofocus>Anuluj</button>
+        <button value="confirm" class="destructive">Usuń projekt</button>
+      </div>
+    </form>
+  </dialog>
 </template>
+
