@@ -13,11 +13,11 @@ deptrac:
         - name: Project
           collectors:
               - type: directory
-                value: src/Project/(?!Application/(Query|Dto)/).*
+                value: src/Project/(?!Application/(Query|Dto|Event)/).*
         - name: ProjectApi
           collectors:
               - type: directory
-                value: src/Project/Application/(Query|Dto)/.*
+                value: src/Project/Application/(Query|Dto|Event)/.*
         - name: Logging
           collectors:
               - type: directory

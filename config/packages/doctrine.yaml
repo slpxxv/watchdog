@@ -22,6 +22,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Project/Infrastructure/Doctrine/Mapping'
                 prefix: 'Watchdog\Project\Domain'
                 alias: Project
+            Logging:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Logging/Infrastructure/Doctrine/Mapping'
+                prefix: 'Watchdog\Logging\Domain'
+                alias: Logging
 
 when@test:
     doctrine:
