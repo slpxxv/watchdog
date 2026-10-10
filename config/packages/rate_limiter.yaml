@@ -1,0 +1,22 @@
+framework:
+    rate_limiter:
+        # Per log source, keyed by its id. Bursts of 100 requests, refilled at 50 per second;
+        # each request may carry up to 1000 lines.
+        log_ingest:
+            policy: token_bucket
+            limit: 100
+            rate: { interval: '1 second', amount: 50 }
+
+when@test:
+    framework:
+        rate_limiter:
+            log_ingest:
+                policy: token_bucket
+                limit: 3
+                rate: { interval: '1 hour', amount: 1 }
+                # The test cache pool is reset between requests; this storage is not.
+                storage_service: test.rate_limiter_storage
+
+    services:
+        test.rate_limiter_storage:
+            class: Symfony\Component\RateLimiter\Storage\InMemoryStorage
