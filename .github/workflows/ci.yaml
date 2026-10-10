@@ -1,21 +1,81 @@
 name: CI
 
+# One workflow, one required check ("CI OK"). Pull requests run only the parts
+# their changes touch; master, the weekly run and manual runs do everything.
 on:
-  push:
-    branches: [main]
   pull_request:
+  push:
+    branches: [master]
+  schedule:
+    - cron: '0 5 * * 1' # Mondays 05:00 UTC: catches new advisories without code changes
+  workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
 
+env:
+  DATABASE_URL: postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=17&charset=utf8
+  REDIS_URL: redis://127.0.0.1:6379
+  MESSENGER_TRANSPORT_DSN: redis://127.0.0.1:6379/messages
+
 jobs:
-  quality:
-    name: Lint, PHPStan, Deptrac, PHPUnit
+  changes:
+    name: Detect changes
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      # On pull_request the checkout is the merge commit; HEAD^1 is the base branch tip.
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+
+      - id: filter
+        env:
+          EVENT: ${{ github.event_name }}
+          BACKEND: '^(src|tests|config|migrations|bin|public|templates|translations)/|^(composer\.(json|lock)|symfony\.lock|\.env.*|phpunit\.dist\.xml|phpstan\.dist\.neon|deptrac.*\.yaml|\.php-cs-fixer\.dist\.php|compose.*\.yaml)$|^\.github/(workflows/ci\.yaml|actions/)'
+          FRONTEND: '^frontend/|^\.editorconfig$|^\.github/workflows/ci\.yaml$'
+        run: |
+          if [ "$EVENT" != pull_request ]; then
+            echo "backend=true" >> "$GITHUB_OUTPUT"
+            echo "frontend=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(git diff --name-only HEAD^1 HEAD)
+          printf 'Changed files:\n%s\n' "$files"
+          for part in backend frontend; do
+            pattern=$([ $part = backend ] && echo "$BACKEND" || echo "$FRONTEND")
+            if grep -qE "$pattern" <<<"$files"; then echo "$part=true"; else echo "$part=false"; fi | tee -a "$GITHUB_OUTPUT"
+          done
+
+  backend-static:
+    name: Backend (lint, PHPStan, Deptrac)
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - run: composer validate --strict
+      - uses: ./.github/actions/setup-backend
+      - run: composer audit
+      - run: composer qa:static
+
+  backend-tests:
+    name: Backend (PHPUnit)
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     services:
       database:
         image: postgres:17-alpine
@@ -31,71 +91,53 @@ jobs:
         ports: ['6379:6379']
         options: >-
           --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 3s --health-retries 10
-    env:
-      DATABASE_URL: postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=17&charset=utf8
-      REDIS_URL: redis://127.0.0.1:6379
-      MESSENGER_TRANSPORT_DSN: redis://127.0.0.1:6379/messages
     steps:
-      - uses: actions/checkout@v5
-
-      - uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
-          php-version: '8.4'
-          extensions: intl, pdo_pgsql, redis, apcu
-          coverage: none
-          tools: composer:v2
-
-      - name: Cache Composer
-        uses: actions/cache@v4
-        with:
-          path: ~/.composer/cache
-          key: composer-${{ hashFiles('composer.lock') }}
-          restore-keys: composer-
-
-      - run: composer validate --strict
-      - run: composer install --prefer-dist --no-progress --no-interaction
-      - run: composer audit
-
-      - name: Symfony lints
-        run: |
-          bin/console lint:container
-          bin/console lint:yaml config --parse-tags
-
-      - name: Code style
-        run: vendor/bin/php-cs-fixer check --diff
-
-      - name: PHPStan
-        run: |
-          bin/console cache:warmup --env=dev
-          vendor/bin/phpstan analyse --no-progress --error-format=github --memory-limit=1G
-
-      - name: Deptrac
-        run: vendor/bin/deptrac analyse --no-progress --report-uncovered --fail-on-uncovered
-
-      - name: Deptrac (bounded contexts)
-        run: vendor/bin/deptrac analyse --config-file=deptrac.contexts.yaml --no-progress
-
-      - name: Database
+          persist-credentials: false
+      - uses: ./.github/actions/setup-backend
+      - name: Test database
         run: |
           bin/console doctrine:database:create --env=test --if-not-exists
           bin/console doctrine:migrations:migrate --env=test --no-interaction
           bin/console doctrine:schema:validate --env=test
-
-      - name: PHPUnit
-        run: vendor/bin/phpunit
+      - run: composer qa:tests
 
   frontend:
-    name: Frontend (type-check, build)
+    name: Frontend (type-check, lint, format, test, build)
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: frontend
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: 24
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
+      - run: npm run qa
       - run: npm run build
+
+  ci-ok:
+    name: CI OK
+    needs: [changes, backend-static, backend-tests, frontend]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Skipped jobs are fine (nothing to check); failed or cancelled ones are not.
+      - env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "Job results: $RESULTS"
+          case " $RESULTS " in
+            *" failure "*|*" cancelled "*) exit 1 ;;
+          esac

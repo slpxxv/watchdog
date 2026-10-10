@@ -1,0 +1,25 @@
+name: Set up backend
+description: PHP with the app's extensions and Composer dependencies (cached).
+
+runs:
+  using: composite
+  steps:
+    - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+      with:
+        php-version: '8.4'
+        extensions: intl, pdo_pgsql, redis, apcu
+        coverage: none
+        tools: composer:v2
+
+    - id: composer-cache
+      shell: bash
+      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+    - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}
+        restore-keys: composer-${{ runner.os }}-
+
+    - shell: bash
+      run: composer install --prefer-dist --no-progress --no-interaction

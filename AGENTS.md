@@ -86,6 +86,11 @@ Install `symfony/test-pack` if it isn't already. Functional/HTTP tests extend
 until it has a test that exercises it the way a caller would, an HTTP request for
 a controller or a service call for a service, not just "it didn't throw."
 
+`composer qa` runs the full backend QA the way CI does: `composer qa:static`
+(lints, php-cs-fixer, PHPStan, Deptrac; no database) then `composer qa:tests`
+(PHPUnit). CI (`.github/workflows/ci.yaml`) runs only the parts a pull request
+touches; its single required check is "CI OK".
+
 Frontend (`frontend/`, Vue + TypeScript): `npm --prefix frontend run qa` runs
 `vue-tsc`, ESLint, the Prettier check and Vitest. Tests sit next to the code
 (`*.test.ts`); `npm --prefix frontend run format` applies Prettier.
