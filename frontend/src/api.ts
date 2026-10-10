@@ -50,6 +50,9 @@ export interface Project {
 const problemMessages: Record<string, (params: Record<string, string | number>) => string> = {
   'project.name.invalid': (p) => `Nazwa projektu musi mieć od 1 do ${p['%max%']} znaków.`,
   'project.not_found': () => 'Projekt nie istnieje.',
+  'source.name.invalid': (p) => `Nazwa źródła musi mieć od 1 do ${p['%max%']} znaków.`,
+  'source.not_found': () => 'Źródło nie istnieje.',
+  'source.revoked': () => 'Źródło jest odwołane. Utwórz nowe, żeby dostać token.',
 }
 
 async function body<T>(res: Response): Promise<T> {
@@ -73,7 +76,45 @@ export async function renameProject(id: string, name: string): Promise<Project> 
   return body(await api(`/projects/${id}`, { method: 'PATCH', body: JSON.stringify({ name }) }))
 }
 
-export async function deleteProject(id: string): Promise<void> {
-  const res = await api(`/projects/${id}`, { method: 'DELETE' })
+async function noContent(res: Response): Promise<void> {
   if (!res.ok) await body(res) // throws the mapped error
+}
+
+export async function getProject(id: string): Promise<Project> {
+  return body(await api(`/projects/${id}`))
+}
+
+export async function deleteProject(id: string): Promise<void> {
+  return noContent(await api(`/projects/${id}`, { method: 'DELETE' }))
+}
+
+export interface Source {
+  id: string
+  projectId: string
+  name: string
+  tokenPrefix: string // first characters of the token, to recognise it
+  createdAt: string // ISO 8601
+  revokedAt: string | null
+}
+
+// Returned only when a token is created or rotated; the server never shows it again.
+export interface NewSource {
+  source: Source
+  token: string
+}
+
+export async function listSources(projectId: string): Promise<Source[]> {
+  return body(await api(`/projects/${projectId}/sources`))
+}
+
+export async function createSource(projectId: string, name: string): Promise<NewSource> {
+  return body(await api(`/projects/${projectId}/sources`, { method: 'POST', body: JSON.stringify({ name }) }))
+}
+
+export async function rotateSourceToken(id: string): Promise<NewSource> {
+  return body(await api(`/sources/${id}/rotate-token`, { method: 'POST' }))
+}
+
+export async function revokeSource(id: string): Promise<void> {
+  return noContent(await api(`/sources/${id}/revoke`, { method: 'POST' }))
 }
