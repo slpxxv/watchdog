@@ -38,14 +38,16 @@ async function run(action: () => Promise<void>) {
   }
 }
 
-onMounted(() => run(async () => {
-  if (!(await loadUser())) {
-    await router.replace({ name: 'login' })
-    return
-  }
-  if (!user.value?.permissions.includes('project.view')) throw new Error('Brak uprawnień do przeglądania projektów.')
-  projects.value = await listProjects()
-}))
+onMounted(() =>
+  run(async () => {
+    if (!(await loadUser())) {
+      await router.replace({ name: 'login' })
+      return
+    }
+    if (!user.value?.permissions.includes('project.view')) throw new Error('Brak uprawnień do przeglądania projektów.')
+    projects.value = await listProjects()
+  }),
+)
 
 function create() {
   return run(async () => {
@@ -98,25 +100,50 @@ function rename(project: Project) {
   <section v-if="projects" class="panel" aria-label="Lista projektów">
     <form v-if="canManage" class="panel-head inline" @submit.prevent="create">
       <label for="new-project" class="visually-hidden">Nazwa nowego projektu</label>
-      <input id="new-project" v-model="newName" placeholder="Nazwa nowego projektu" required pattern=".*\S.*" :maxlength="MAX_NAME_LENGTH">
+      <input
+        id="new-project"
+        v-model="newName"
+        placeholder="Nazwa nowego projektu"
+        required
+        pattern=".*\S.*"
+        :maxlength="MAX_NAME_LENGTH"
+      />
       <button type="submit" :disabled="pending">Dodaj projekt</button>
     </form>
 
     <p v-if="!projects.length" class="empty">
-      {{ canManage ? 'Nie masz jeszcze projektów. Wpisz nazwę powyżej, żeby dodać pierwszy.' : 'Nie ma jeszcze żadnych projektów.' }}
+      {{
+        canManage
+          ? 'Nie masz jeszcze projektów. Wpisz nazwę powyżej, żeby dodać pierwszy.'
+          : 'Nie ma jeszcze żadnych projektów.'
+      }}
     </p>
 
     <ul v-else class="rows">
       <li v-for="project in projects" :key="project.id" class="row">
-        <form v-if="editingId === project.id" class="inline" @submit.prevent="rename(project)" @keydown.esc="editingId = null">
+        <form
+          v-if="editingId === project.id"
+          class="inline"
+          @submit.prevent="rename(project)"
+          @keydown.esc="editingId = null"
+        >
           <label :for="`rename-${project.id}`" class="visually-hidden">Nowa nazwa projektu „{{ project.name }}”</label>
-          <input :id="`rename-${project.id}`" v-model="editName" required pattern=".*\S.*" :maxlength="MAX_NAME_LENGTH" autofocus>
+          <input
+            :id="`rename-${project.id}`"
+            v-model="editName"
+            required
+            pattern=".*\S.*"
+            :maxlength="MAX_NAME_LENGTH"
+            autofocus
+          />
           <button type="submit" :disabled="pending">Zapisz</button>
           <button type="button" class="ghost" @click="editingId = null">Anuluj</button>
         </form>
         <template v-else>
           <span class="row-name">{{ project.name }}</span>
-          <time class="row-meta" :datetime="project.createdAt">{{ dateFormat.format(new Date(project.createdAt)) }}</time>
+          <time class="row-meta" :datetime="project.createdAt">{{
+            dateFormat.format(new Date(project.createdAt))
+          }}</time>
           <span v-if="canManage" class="row-actions">
             <button type="button" class="ghost" @click="startEditing(project)">Zmień nazwę</button>
             <button type="button" class="ghost danger" :disabled="pending" @click="askToDelete(project)">Usuń</button>
@@ -138,4 +165,3 @@ function rename(project: Project) {
     </form>
   </dialog>
 </template>
-

@@ -10,9 +10,13 @@ const router = useRouter()
 const showShell = computed(() => route.name !== undefined && route.name !== 'login')
 const roleLabel = computed(() => (user.value?.roles.includes('super_admin') ? 'Super admin' : 'Użytkownik'))
 
-watch(showShell, (shown) => {
-  if (shown) loadUser().catch(() => {}) // views report load errors themselves
-}, { immediate: true })
+watch(
+  showShell,
+  (shown) => {
+    if (shown) loadUser().catch(() => {}) // views report load errors themselves
+  },
+  { immediate: true },
+)
 
 async function signOut() {
   await logout()
@@ -29,11 +33,15 @@ async function signOut() {
       </RouterLink>
       <nav aria-label="Główna nawigacja">
         <RouterLink :to="{ name: 'projects' }">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          </svg>
           Projekty
         </RouterLink>
         <RouterLink :to="{ name: 'debug' }">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 9h8M8 13h8M8 17h5M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" /></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 9h8M8 13h8M8 17h5M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+          </svg>
           Debug
         </RouterLink>
       </nav>

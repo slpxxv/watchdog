@@ -32,11 +32,11 @@ async function submit() {
       <p v-if="error" class="alert" role="alert">{{ error }}</p>
       <div class="field">
         <label for="email">Adres e-mail</label>
-        <input id="email" v-model="email" type="email" autocomplete="username" required autofocus>
+        <input id="email" v-model="email" type="email" autocomplete="username" required autofocus />
       </div>
       <div class="field">
         <label for="password">Hasło</label>
-        <input id="password" v-model="password" type="password" autocomplete="current-password" required>
+        <input id="password" v-model="password" type="password" autocomplete="current-password" required />
       </div>
       <button type="submit" :disabled="pending">{{ pending ? 'Logowanie…' : 'Zaloguj się' }}</button>
     </form>

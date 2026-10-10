@@ -23,22 +23,52 @@ onMounted(async () => {
   <template v-if="user">
     <h2>Użytkownik</h2>
     <div class="panel">
-      <table class="kv"><tbody>
-        <tr><th>ID</th><td><code>{{ user.id }}</code></td></tr>
-        <tr><th>E-mail</th><td>{{ user.email }}</td></tr>
-        <tr><th>Role</th><td>{{ user.roles.join(', ') }}</td></tr>
-        <tr><th>Uprawnienia</th><td>{{ user.permissions.join(', ') || '—' }}</td></tr>
-        <tr><th>Utworzony</th><td>{{ new Date(user.createdAt).toLocaleString('pl-PL') }}</td></tr>
-      </tbody></table>
+      <table class="kv">
+        <tbody>
+          <tr>
+            <th>ID</th>
+            <td>
+              <code>{{ user.id }}</code>
+            </td>
+          </tr>
+          <tr>
+            <th>E-mail</th>
+            <td>{{ user.email }}</td>
+          </tr>
+          <tr>
+            <th>Role</th>
+            <td>{{ user.roles.join(', ') }}</td>
+          </tr>
+          <tr>
+            <th>Uprawnienia</th>
+            <td>{{ user.permissions.join(', ') || '—' }}</td>
+          </tr>
+          <tr>
+            <th>Utworzony</th>
+            <td>{{ new Date(user.createdAt).toLocaleString('pl-PL') }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <h2>Środowisko</h2>
     <div class="panel">
-      <table class="kv"><tbody>
-        <tr><th>Vue</th><td>{{ version }}</td></tr>
-        <tr><th>Tryb Vite</th><td>{{ mode }}</td></tr>
-        <tr><th>Symfony Profiler</th><td><a href="/_profiler" target="_blank">/_profiler</a></td></tr>
-      </tbody></table>
+      <table class="kv">
+        <tbody>
+          <tr>
+            <th>Vue</th>
+            <td>{{ version }}</td>
+          </tr>
+          <tr>
+            <th>Tryb Vite</th>
+            <td>{{ mode }}</td>
+          </tr>
+          <tr>
+            <th>Symfony Profiler</th>
+            <td><a href="/_profiler" target="_blank">/_profiler</a></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <h2>GET /api/me</h2>
