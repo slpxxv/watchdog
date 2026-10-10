@@ -23,6 +23,7 @@ async function render(permissions: string[], list: unknown[]) {
     routes: [
       { path: '/', component: { template: '<div />' } },
       { path: '/login', name: 'login', component: { template: '<div />' } },
+      { path: '/projects/:id/logs', name: 'project-logs', component: { template: '<div />' } },
     ],
   })
   const wrapper = mount(ProjectsView, { global: { plugins: [router] } })
@@ -44,6 +45,12 @@ describe('ProjectsView', () => {
 
     expect(wrapper.find('.page-head p').text()).toBe(label)
     expect(wrapper.findAll('.row')).toHaveLength(n)
+  })
+
+  it('links each project to its page', async () => {
+    const wrapper = await render(['project.view'], projects(1))
+
+    expect(wrapper.find('.row-name').attributes('href')).toBe('/projects/id-0/logs')
   })
 
   it('hides create, rename and delete without project.manage', async () => {
