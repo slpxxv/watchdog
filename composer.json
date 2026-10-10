@@ -68,6 +68,24 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "qa:static": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php bin/console lint:container",
+            "@php bin/console lint:yaml config --parse-tags",
+            "vendor/bin/php-cs-fixer check --diff",
+            "@php bin/console cache:warmup --env=dev",
+            "vendor/bin/phpstan analyse --no-progress --memory-limit=1G",
+            "vendor/bin/deptrac analyse --no-progress --report-uncovered --fail-on-uncovered",
+            "vendor/bin/deptrac analyse --config-file=deptrac.contexts.yaml --no-progress"
+        ],
+        "qa:tests": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php bin/phpunit"
+        ],
+        "qa": [
+            "@qa:static",
+            "@qa:tests"
         ]
     },
     "conflict": {
@@ -97,5 +115,10 @@
         "symfony/web-profiler-bundle": "8.1.*"
     },
     "name": "slpxxv/watchdog",
-    "description": "Watchdog application"
+    "description": "Watchdog application",
+    "scripts-descriptions": {
+        "qa:static": "Lints, code style, PHPStan and Deptrac (no database needed)",
+        "qa:tests": "PHPUnit (needs the test database)",
+        "qa": "Full backend QA: qa:static, then qa:tests"
+    }
 }
