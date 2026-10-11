@@ -1,7 +1,7 @@
 framework:
     rate_limiter:
         # Per log source, keyed by its id. Bursts of 100 requests, refilled at 50 per second;
-        # each request may carry up to 1000 lines.
+        # each request may carry up to 10 000 lines (2 MB).
         log_ingest:
             policy: token_bucket
             limit: 100

@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 final readonly class IngestPayloadReader
 {
     public const int MAX_BYTES = 2 * 1024 * 1024; // after decompression
-    public const int MAX_LINES = 1000;
+    public const int MAX_LINES = 10_000; // the 2 MB cap bounds the work anyway; shippers like Fluent Bit send whatever piled up since the last flush
     private const int CHUNK = 64 * 1024;
     private const int DEPTH = 64;
 

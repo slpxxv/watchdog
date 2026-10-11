@@ -18,6 +18,7 @@ use Watchdog\Logging\Domain\Log\LogFilter;
 use Watchdog\Logging\Domain\Log\LogLevel;
 use Watchdog\Logging\Domain\Log\LogStore;
 use Watchdog\Logging\Domain\ProjectId;
+use Watchdog\Logging\UI\Http\Ingest\IngestPayloadReader;
 use Watchdog\Project\Application\Command\CreateProject\CreateProject;
 use Watchdog\Project\Application\Command\CreateProject\CreateProjectHandler;
 
@@ -112,7 +113,7 @@ final class IngestApiTest extends WebTestCase
         $this->ingest('["just a string"]');
         self::assertResponseStatusCodeSame(422);
 
-        $this->ingest('['.implode(',', array_fill(0, 1001, '{}')).']');
+        $this->ingest('['.implode(',', array_fill(0, IngestPayloadReader::MAX_LINES + 1, '{}')).']');
         self::assertResponseStatusCodeSame(413);
 
         self::assertSame([], $this->stored());
