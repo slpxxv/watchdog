@@ -10,6 +10,9 @@ framework:
                     multiplier: 2
             failed: 'doctrine://default?queue_name=failed'
 
+        routing:
+            Watchdog\Logging\Application\Command\PurgeProjectLogs\PurgeProjectLogs: async
+
 when@test:
     framework:
         messenger:

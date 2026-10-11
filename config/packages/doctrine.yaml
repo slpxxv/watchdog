@@ -1,6 +1,8 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
+        # log_entry and its partitions are created by hand-written migrations (the ORM cannot partition).
+        schema_filter: ~^(?!log_entry)~
         profiling_collect_backtrace: '%kernel.debug%'
     orm:
         validate_xml_mapping: true
@@ -22,6 +24,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Project/Infrastructure/Doctrine/Mapping'
                 prefix: 'Watchdog\Project\Domain'
                 alias: Project
+            Logging:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Logging/Infrastructure/Doctrine/Mapping'
+                prefix: 'Watchdog\Logging\Domain'
+                alias: Logging
 
 when@test:
     doctrine:

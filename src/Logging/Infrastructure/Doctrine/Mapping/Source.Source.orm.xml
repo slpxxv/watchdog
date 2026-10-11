@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Watchdog\Logging\Domain\Source\Source" table="log_source">
+        <indexes>
+            <index name="idx_log_source_project" columns="project_id"/>
+        </indexes>
+
+        <id name="id" type="guid"/>
+        <!-- A Project-context id stored as a plain value: no foreign key across contexts. -->
+        <field name="projectId" column="project_id" type="guid"/>
+        <field name="name" length="100"/>
+        <field name="tokenHash" column="token_hash" length="64" unique="true">
+            <options>
+                <option name="fixed">true</option>
+            </options>
+        </field>
+        <field name="tokenPrefix" column="token_prefix" length="16"/>
+        <field name="createdAt" column="created_at" type="datetime_immutable"/>
+        <field name="revokedAt" column="revoked_at" type="datetime_immutable" nullable="true"/>
+    </entity>
+</doctrine-mapping>

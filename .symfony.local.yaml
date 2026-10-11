@@ -7,3 +7,7 @@ workers:
     docker_compose: ~
     vite:
         cmd: ['npm', '--prefix', 'frontend', 'run', 'dev']
+    # Background jobs (log purges) and the scheduler (daily log partitions).
+    messenger_consume_async:
+        cmd: ['symfony', 'console', 'messenger:consume', 'async', 'scheduler_default', '--time-limit=3600']
+        watch: ['config', 'src', 'vendor/composer']

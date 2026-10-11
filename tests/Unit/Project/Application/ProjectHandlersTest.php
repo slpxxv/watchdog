@@ -13,13 +13,17 @@ use Watchdog\Project\Application\Command\DeleteProject\DeleteProjectHandler;
 use Watchdog\Project\Application\Command\RenameProject\RenameProject;
 use Watchdog\Project\Application\Command\RenameProject\RenameProjectHandler;
 use Watchdog\Project\Application\Dto\ProjectDto;
+use Watchdog\Project\Application\Event\ProjectDeleted;
 use Watchdog\Project\Application\Query\GetProject\GetProject;
 use Watchdog\Project\Application\Query\GetProject\GetProjectHandler;
 use Watchdog\Project\Application\Query\ListProjects\ListProjects;
 use Watchdog\Project\Application\Query\ListProjects\ListProjectsHandler;
+use Watchdog\Project\Application\Query\ProjectExists\ProjectExists;
+use Watchdog\Project\Application\Query\ProjectExists\ProjectExistsHandler;
 use Watchdog\Project\Domain\Exception\ProjectNotFound;
 use Watchdog\Project\Domain\ProjectId;
 use Watchdog\Tests\Double\InMemoryProjectRepository;
+use Watchdog\Tests\Double\RecordingEventDispatcher;
 
 final class ProjectHandlersTest extends TestCase
 {
@@ -69,16 +73,35 @@ final class ProjectHandlersTest extends TestCase
         $kept = $this->create('Kept');
         $deleted = $this->create('Deleted');
 
-        (new DeleteProjectHandler($this->projects))(new DeleteProject($deleted->value));
+        $events = new RecordingEventDispatcher();
+
+        (new DeleteProjectHandler($this->projects, $events))(new DeleteProject($deleted->value));
 
         self::assertNull($this->projects->ofId($deleted));
         self::assertNotNull($this->projects->ofId($kept));
+        self::assertEquals([new ProjectDeleted($deleted->value)], $events->events);
     }
 
-    public function testDeleteUnknownProjectThrows(): void
+    public function testDeleteUnknownProjectThrowsWithoutPublishing(): void
     {
-        $this->expectException(ProjectNotFound::class);
-        (new DeleteProjectHandler($this->projects))(new DeleteProject(self::UNKNOWN_ID));
+        $events = new RecordingEventDispatcher();
+
+        try {
+            (new DeleteProjectHandler($this->projects, $events))(new DeleteProject(self::UNKNOWN_ID));
+            self::fail('Expected ProjectNotFound.');
+        } catch (ProjectNotFound) {
+        }
+
+        self::assertSame([], $events->events);
+    }
+
+    public function testProjectExists(): void
+    {
+        $id = $this->create('Watchdog');
+        $exists = new ProjectExistsHandler($this->projects);
+
+        self::assertTrue($exists(new ProjectExists($id->value)));
+        self::assertFalse($exists(new ProjectExists(self::UNKNOWN_ID)));
     }
 
     public function testGetReturnsDto(): void

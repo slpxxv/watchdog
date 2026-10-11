@@ -140,7 +140,9 @@ function rename(project: Project) {
           <button type="button" class="ghost" @click="editingId = null">Anuluj</button>
         </form>
         <template v-else>
-          <span class="row-name">{{ project.name }}</span>
+          <RouterLink :to="{ name: 'project-logs', params: { id: project.id } }" class="row-name row-link">{{
+            project.name
+          }}</RouterLink>
           <time class="row-meta" :datetime="project.createdAt">{{
             dateFormat.format(new Date(project.createdAt))
           }}</time>
