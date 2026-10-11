@@ -22,6 +22,7 @@ final class SourceApiTest extends WebTestCase
 {
     private const string ADMIN = 'root@example.com';
     private const string VIEWER = 'viewer@example.com';
+    private const string LOG_VIEWER = 'logs@example.com';
     private const string PASSWORD = 'correct horse battery staple';
     private const string UNKNOWN = '01890000-0000-7000-8000-000000000000';
 
@@ -32,10 +33,12 @@ final class SourceApiTest extends WebTestCase
         $this->client = self::createClient();
         $roles = self::getContainer()->get(RoleRepository::class);
         $roles->save(Role::create($roles->nextIdentity(), 'project_viewer', 'Project viewer', [Permission::ProjectView]));
+        $roles->save(Role::create($roles->nextIdentity(), 'log_viewer', 'Log viewer', [Permission::LogView]));
 
         $createUser = self::getContainer()->get(CreateUserHandler::class);
         $createUser(new CreateUser(self::ADMIN, self::PASSWORD, [Role::USER, Role::SUPER_ADMIN]));
         $createUser(new CreateUser(self::VIEWER, self::PASSWORD, [Role::USER, 'project_viewer']));
+        $createUser(new CreateUser(self::LOG_VIEWER, self::PASSWORD, [Role::USER, 'log_viewer']));
     }
 
     /**
@@ -183,6 +186,26 @@ final class SourceApiTest extends WebTestCase
         self::assertResponseStatusCodeSame(403);
 
         $this->client->jsonRequest('POST', "/api/projects/{$projectId}/sources", ['name' => 'API']);
+        self::assertResponseStatusCodeSame(403);
+    }
+
+    public function testLogViewersMayListSourcesButNotChangeThem(): void
+    {
+        $this->logIn(self::ADMIN);
+        $projectId = $this->createProject();
+        $source = $this->createSource($projectId);
+        $this->client->request('POST', '/api/logout');
+
+        $this->logIn(self::LOG_VIEWER);
+        $this->client->request('GET', "/api/projects/{$projectId}/sources");
+        self::assertResponseIsSuccessful();
+        self::assertCount(1, $this->json());
+
+        $this->client->jsonRequest('POST', "/api/projects/{$projectId}/sources", ['name' => 'Sneaky']);
+        self::assertResponseStatusCodeSame(403);
+        $this->client->request('POST', "/api/sources/{$source['id']}/rotate-token");
+        self::assertResponseStatusCodeSame(403);
+        $this->client->request('POST', "/api/sources/{$source['id']}/revoke");
         self::assertResponseStatusCodeSame(403);
     }
 }
