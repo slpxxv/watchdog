@@ -6,6 +6,7 @@ namespace Watchdog\Logging\Application\Query\SearchLogs;
 
 use Psr\Clock\ClockInterface;
 use Watchdog\Logging\Application\Dto\LogPageDto;
+use Watchdog\Logging\Application\Port\LogRetentionPolicy;
 use Watchdog\Logging\Application\Port\ProjectCatalog;
 use Watchdog\Logging\Application\Query\LogEntryPresenter;
 use Watchdog\Logging\Domain\Exception\UnknownProject;
@@ -24,6 +25,7 @@ final readonly class SearchLogsHandler
         private LogStore $logs,
         private ProjectCatalog $projects,
         private LogEntryPresenter $presenter,
+        private LogRetentionPolicy $retention,
         private ClockInterface $clock,
     ) {
     }
@@ -68,6 +70,7 @@ final readonly class SearchLogsHandler
             nextCursor: $page->next?->encode(),
             from: $from->format(\DATE_ATOM),
             to: $query->to?->format(\DATE_ATOM),
+            retentionDays: $this->retention->days(),
         );
     }
 }

@@ -56,7 +56,7 @@ describe('ProjectLogsView', () => {
   it('sends the filters from the URL', async () => {
     const fetch = stubApi({
       [SOURCES]: () => [],
-      [LOGS]: () => ({ items: [], nextCursor: null, from: '', to: null }),
+      [LOGS]: () => ({ items: [], nextCursor: null, from: '', to: null, retentionDays: 14 }),
     })
 
     await render('?level=error&q=boom&range=1h&source=s1')
@@ -78,6 +78,7 @@ describe('ProjectLogsView', () => {
         nextCursor: null,
         from: '',
         to: null,
+        retentionDays: 14,
       }),
     })
     const { wrapper } = await render()
@@ -89,6 +90,9 @@ describe('ProjectLogsView', () => {
 
     await row.trigger('click')
     expect(wrapper.find('.log-detail pre').text()).toContain('"order": 5')
+    expect(wrapper.find('.retention-note').text()).toBe(
+      'Logi są przechowywane 14 dni, starsze są usuwane automatycznie.',
+    )
   })
 
   it('loads older lines with the cursor and the same time range', async () => {
@@ -96,8 +100,14 @@ describe('ProjectLogsView', () => {
       [SOURCES]: () => [],
       [LOGS]: (url) =>
         url.searchParams.get('cursor')
-          ? { items: [line(1)], nextCursor: null, from: 'x', to: null }
-          : { items: [line(3), line(2)], nextCursor: 'abc', from: '2026-10-10T12:00:00+00:00', to: null },
+          ? { items: [line(1)], nextCursor: null, from: 'x', to: null, retentionDays: 14 }
+          : {
+              items: [line(3), line(2)],
+              nextCursor: 'abc',
+              from: '2026-10-10T12:00:00+00:00',
+              to: null,
+              retentionDays: 14,
+            },
     })
     const { wrapper } = await render()
 

@@ -22,6 +22,7 @@ use Watchdog\Logging\Domain\Source\Source;
 use Watchdog\Logging\Domain\Source\SourceId;
 use Watchdog\Logging\Domain\Source\SourceToken;
 use Watchdog\Tests\Double\FixedProjectCatalog;
+use Watchdog\Tests\Double\FixedRetention;
 use Watchdog\Tests\Double\InMemorySourceRepository;
 use Watchdog\Tests\Double\SpyLogStore;
 
@@ -43,7 +44,7 @@ final class LogQueriesTest extends TestCase
         $clock = new MockClock('2026-10-11 12:00:00 UTC');
         $presenter = new LogEntryPresenter($sources);
 
-        $this->search = new SearchLogsHandler($this->logs, $projects, $presenter, $clock);
+        $this->search = new SearchLogsHandler($this->logs, $projects, $presenter, new FixedRetention(14), $clock);
         $this->tail = new TailLogsHandler($this->logs, $projects, $presenter, $clock);
     }
 

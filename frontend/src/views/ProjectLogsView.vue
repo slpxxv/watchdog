@@ -26,6 +26,7 @@ const sources = ref<Source[]>([])
 const lines = ref<LogLine[]>([]) // search: newest first
 const nextCursor = ref<string | null>(null)
 const searchFrom = ref('')
+const retentionDays = ref<number | null>(null)
 const tailLines = ref<LogLine[]>([]) // live: arrival order, newest last
 const newCount = ref(0)
 const expanded = ref(new Set<number>())
@@ -51,6 +52,11 @@ const filters = computed<LogFilters>(() => ({
 const shown = computed(() => (live.value ? tailLines.value : lines.value))
 
 const plural = new Intl.PluralRules('pl')
+const retentionLabel = computed(() => {
+  const days = retentionDays.value
+  if (days === null) return ''
+  return `Logi są przechowywane ${days} ${plural.select(days) === 'one' ? 'dzień' : 'dni'}, starsze są usuwane automatycznie.`
+})
 const newLinesLabel = computed(() => {
   const forms: Partial<Record<Intl.LDMLPluralRule, string>> = { one: 'nowa linia', few: 'nowe linie' }
   return `${newCount.value} ${forms[plural.select(newCount.value)] ?? 'nowych linii'}`
@@ -104,6 +110,7 @@ function search() {
     lines.value = page.items
     nextCursor.value = page.nextCursor
     searchFrom.value = page.from
+    retentionDays.value = page.retentionDays
   })
 }
 
@@ -298,5 +305,6 @@ watch(
     <button v-if="live && newCount" type="button" class="new-lines" @click="scrollToBottom">
       {{ newLinesLabel }}
     </button>
+    <p v-if="retentionLabel" class="retention-note muted">{{ retentionLabel }}</p>
   </template>
 </template>

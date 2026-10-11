@@ -138,6 +138,7 @@ export interface LogPage {
   nextCursor: string | null
   from: string
   to: string | null
+  retentionDays: number
 }
 
 export interface LogTail {

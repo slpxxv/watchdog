@@ -38,6 +38,11 @@ final class LogMaintenanceTest extends TestCase
             {
                 return $this->stray;
             }
+
+            public function dropOlderThan(\DateTimeImmutable $oldestKept): array
+            {
+                return [];
+            }
         };
         $logger = new class extends AbstractLogger {
             /** @var list<string> */

@@ -17,4 +17,11 @@ interface LogPartitions
     public function ensureDays(\DateTimeImmutable $from, \DateTimeImmutable $to): array;
 
     public function linesInDefaultPartition(): int;
+
+    /**
+     * Drops every daily partition for a day before $oldestKept (UTC). Never touches the default partition.
+     *
+     * @return list<string> names of the partitions dropped now
+     */
+    public function dropOlderThan(\DateTimeImmutable $oldestKept): array;
 }

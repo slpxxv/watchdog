@@ -140,6 +140,7 @@ final class LogApiTest extends WebTestCase
 
         $default = $this->get('logs');
         self::assertSame(['fresh'], self::messages($default));
+        self::assertSame(14, $default['retentionDays']);
         self::assertIsString($default['from']);
 
         $wider = $this->get('logs', ['from' => (new \DateTimeImmutable('-3 days'))->format(\DATE_ATOM)]);

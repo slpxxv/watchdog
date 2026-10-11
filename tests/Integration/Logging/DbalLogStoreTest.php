@@ -190,4 +190,23 @@ final class DbalLogStoreTest extends KernelTestCase
         self::assertSame(['log_entry_p20310506'], $partitions->ensureDays(new \DateTimeImmutable('2031-05-05'), new \DateTimeImmutable('2031-05-06')));
         self::assertEquals(1, self::getContainer()->get(Connection::class)->fetchOne('SELECT count(*) FROM log_entry_default'), 'connection still usable');
     }
+
+    public function testRetentionDropsOnlyWholeDaysBeforeTheCutoff(): void
+    {
+        $partitions = self::getContainer()->get(LogPartitions::class);
+        $partitions->ensureDays(new \DateTimeImmutable('2030-01-08'), new \DateTimeImmutable('2030-01-09'));
+        $this->logs->append([
+            $this->entry('dropped with its day', '2030-01-08 23:59:59.999999'),
+            $this->entry('kept', self::DAY.' 00:00:00'),
+            $this->entry('stray in default', '2031-05-05 12:00:00'),
+        ]);
+
+        $dropped = $partitions->dropOlderThan(new \DateTimeImmutable(self::DAY));
+
+        self::assertContains('log_entry_p20300108', $dropped);
+        self::assertContains('log_entry_p20300109', $dropped);
+        self::assertNotContains('log_entry_p20300110', $dropped);
+        self::assertSame(['stray in default', 'kept'], $this->messages(new LogFilter($this->project)), 'the default partition is never dropped');
+        self::assertSame([], $partitions->dropOlderThan(new \DateTimeImmutable(self::DAY)), 'idempotent');
+    }
 }

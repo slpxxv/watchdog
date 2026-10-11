@@ -51,6 +51,27 @@ final readonly class PartitionManager implements LogPartitions
         return $created;
     }
 
+    public function dropOlderThan(\DateTimeImmutable $oldestKept): array
+    {
+        $cutoff = $oldestKept->setTimezone(new \DateTimeZone('UTC'))->format('Ymd');
+        $dropped = [];
+
+        foreach ($this->dailyPartitions() as $name => $day) {
+            if ($day >= $cutoff) {
+                continue;
+            }
+
+            try {
+                $this->connection->transactional(fn (Connection $connection): int|string => $connection->executeStatement('DROP TABLE '.$name));
+                $dropped[] = $name;
+            } catch (DbalException $e) {
+                $this->logger->error('Could not drop log partition {partition}: {error}', ['partition' => $name, 'error' => $e->getMessage()]);
+            }
+        }
+
+        return $dropped;
+    }
+
     public function linesInDefaultPartition(): int
     {
         $count = $this->connection->fetchOne(\sprintf(
@@ -60,5 +81,24 @@ final readonly class PartitionManager implements LogPartitions
         ));
 
         return is_numeric($count) ? (int) $count : 0;
+    }
+
+    /**
+     * @return array<string, string> partition name => its day as Ymd, oldest first
+     */
+    private function dailyPartitions(): array
+    {
+        $partitions = [];
+        foreach ($this->connection->fetchFirstColumn(<<<'SQL'
+            SELECT c.relname FROM pg_inherits i JOIN pg_class c ON c.oid = i.inhrelid
+            WHERE i.inhparent = 'log_entry'::regclass
+            SQL) as $name) {
+            if (\is_string($name) && 1 === preg_match('/^log_entry_p(\d{8})$/', $name, $m)) {
+                $partitions[$name] = $m[1];
+            }
+        }
+        asort($partitions);
+
+        return $partitions;
     }
 }
