@@ -53,6 +53,7 @@ const problemMessages: Record<string, (params: Record<string, string | number>) 
   'source.name.invalid': (p) => `Nazwa źródła musi mieć od 1 do ${p['%max%']} znaków.`,
   'source.not_found': () => 'Źródło nie istnieje.',
   'source.revoked': () => 'Źródło jest odwołane. Utwórz nowe, żeby dostać token.',
+  'log.query.invalid': (p) => `Nieprawidłowe zapytanie: ${p['%reason%']}`,
 }
 
 async function body<T>(res: Response): Promise<T> {
@@ -117,4 +118,57 @@ export async function rotateSourceToken(id: string): Promise<NewSource> {
 
 export async function revokeSource(id: string): Promise<void> {
   return noContent(await api(`/sources/${id}/revoke`, { method: 'POST' }))
+}
+
+export type LogLevel = 'debug' | 'info' | 'notice' | 'warning' | 'error' | 'critical' | 'alert' | 'emergency'
+
+export interface LogLine {
+  id: number
+  timestamp: string // ISO 8601 with milliseconds
+  receivedAt: string
+  level: LogLevel
+  message: string
+  context: Record<string, unknown> | unknown[] // an empty object arrives as []
+  sourceId: string
+  sourceName: string | null
+}
+
+export interface LogPage {
+  items: LogLine[] // newest first
+  nextCursor: string | null
+  from: string
+  to: string | null
+}
+
+export interface LogTail {
+  items: LogLine[] // arrival order; may repeat lines from the previous call
+  lastId: number
+}
+
+export interface LogFilters {
+  level?: string
+  sources?: string[]
+  q?: string
+}
+
+function query(params: Record<string, string | number | string[] | undefined>): string {
+  const search = new URLSearchParams()
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined || value === '') continue
+    if (Array.isArray(value)) value.forEach((v) => search.append(`${key}[]`, v))
+    else search.set(key, String(value))
+  }
+  const text = search.toString()
+  return text ? `?${text}` : ''
+}
+
+export async function searchLogs(
+  projectId: string,
+  filters: LogFilters & { from?: string; cursor?: string; limit?: number },
+): Promise<LogPage> {
+  return body(await api(`/projects/${projectId}/logs${query({ ...filters })}`))
+}
+
+export async function tailLogs(projectId: string, after: number, filters: LogFilters): Promise<LogTail> {
+  return body(await api(`/projects/${projectId}/logs/tail${query({ ...filters, after })}`))
 }
