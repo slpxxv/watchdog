@@ -13,12 +13,12 @@
     "qa": "npm run type-check && npm run lint && npm run format:check && npm run test"
   },
   "dependencies": {
-    "vue": "^3.5.43",
+    "vue": "^3.5.44",
     "vue-router": "^5.4.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
-    "@vitejs/plugin-vue": "^6.0.9",
+    "@vitejs/plugin-vue": "^6.0.10",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/test-utils": "^2.5.1",
@@ -26,11 +26,11 @@
     "eslint": "^9.39.5",
     "eslint-plugin-vue": "^10.11.1",
     "jsdom": "^27.0.1",
-    "prettier": "^3.9.9",
+    "prettier": "^3.9.10",
     "typescript": "~6.0.3",
-    "typescript-eslint": "^8.71.1",
-    "vite": "^8.3.4",
-    "vitest": "^5.0.3",
-    "vue-tsc": "^3.3.12"
+    "typescript-eslint": "^8.72.0",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5",
+    "vue-tsc": "^3.3.13"
   }
 }
