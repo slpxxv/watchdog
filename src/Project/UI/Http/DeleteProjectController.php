@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Watchdog\Project\UI\Http;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Watchdog\Project\Application\Command\DeleteProject;
 use Watchdog\Shared\Domain\Permission;
@@ -20,16 +22,18 @@ final class DeleteProjectController extends AbstractController
     }
 
     #[Route(
-        '/api/projects/{id}',
+        '/projects/{projectId}/delete',
         name: 'project_delete',
-        requirements: ['id' => Requirement::UUID],
-        methods: ['DELETE'],
+        requirements: ['projectId' => Requirement::UUID],
+        methods: ['POST'],
     )]
     #[IsGranted(Permission::ProjectManage->value)]
-    public function __invoke(string $id): Response
+    #[IsCsrfTokenValid('project_delete', tokenKey: '_token')]
+    public function __invoke(string $projectId, Request $request): Response
     {
-        ($this->deleteProject)($id);
+        ($this->deleteProject)($projectId);
+        $this->addFlash('success', 'Projekt został usunięty.');
 
-        return new Response(status: Response::HTTP_NO_CONTENT);
+        return $this->redirectToRoute('project_list');
     }
 }

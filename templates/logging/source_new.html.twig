@@ -1,0 +1,39 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Połącz źródło · {{ project.name }} · Watchdog{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Połącz źródło</h1>
+        <p class="muted">{{ project.name }}</p>
+    </div>
+</div>
+
+{{ form_start(form, {attr: {class: 'panel connect', 'data-turbo': 'false'}}) }}
+    {% for error in form.vars.errors %}<p class="alert" role="alert">{{ error.message }}</p>{% endfor %}
+    <div>
+        <label for="{{ form.name.vars.id }}">Nazwa źródła</label>
+        {{ form_errors(form.name) }}
+        {{ form_widget(form.name, {attr: {required: true, autofocus: true}}) }}
+    </div>
+
+    <fieldset class="platforms">
+        <legend>Skąd wysyłasz logi?</legend>
+        {% for choice in form.platform %}
+            {% set platform = platforms()[choice.vars.value] %}
+            <label class="platform">
+                <input type="radio" id="{{ choice.vars.id }}" name="{{ choice.vars.full_name }}" value="{{ choice.vars.value }}"{{ choice.vars.checked ? ' checked' }}>
+                <strong>{{ platform.name }}</strong>
+                <span class="muted">{{ platform.hint }}</span>
+            </label>
+        {% endfor %}
+    </fieldset>
+
+    <div class="connect-actions">
+        <a href="{{ path('source_list', {projectId: project.id}) }}" class="back-link">Wróć do źródeł</a>
+        <button type="submit">Utwórz źródło</button>
+    </div>
+    {{ form_widget(form._token) }}
+{{ form_end(form, {render_rest: false}) }}
+{% endblock %}

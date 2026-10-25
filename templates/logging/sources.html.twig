@@ -1,0 +1,117 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Źródła · {{ project.name }} · Watchdog{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Źródła</h1>
+        <p class="muted">{{ project.name }}</p>
+    </div>
+    <div class="page-actions">
+        <form class="search-box" method="get" action="{{ path('source_list', {projectId: project.id}) }}" data-controller="shortcut" data-action="keydown@document->shortcut#focus">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8.5 3a5.5 5.5 0 0 1 4.38 8.82l3.65 3.65-1.06 1.06-3.65-3.65A5.5 5.5 0 1 1 8.5 3Zm0 1.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/></svg>
+            <label for="source-search" class="visually-hidden">Szukaj źródła</label>
+            <input id="source-search" name="q" value="{{ filter }}" type="search" placeholder="Szukaj" data-shortcut-target="input">
+            <kbd aria-hidden="true">/</kbd>
+        </form>
+        <a href="{{ path('source_new', {projectId: project.id}) }}" class="button">Połącz źródło</a>
+    </div>
+</div>
+
+<section class="panel sources" aria-label="Źródła logów">
+    <div class="source-row source-columns" aria-hidden="true">
+        <span>Źródło</span>
+        <span>Podgląd</span>
+        <span>Ostatnie 24 h</span>
+    </div>
+
+    {% if not sources %}
+        <p class="empty">Nie ma jeszcze źródeł. Połącz pierwsze, żeby zacząć zbierać logi.</p>
+    {% elseif not shown %}
+        <p class="empty">Żadne źródło nie pasuje do „{{ filter }}”.</p>
+    {% else %}
+        <ul class="source-list">
+            {% for source in shown %}
+                {% set platform = platforms()[source.platform] %}
+                <li class="source-row{{ source.revokedAt ? ' revoked' }}">
+                    <div class="source-main">
+                        <span class="platform-mark" aria-hidden="true">{{ platform.mark }}</span>
+                        <div>
+                            <a href="{{ path('log_live', {projectId: project.id, source: source.id}) }}" class="source-name">{{ source.name }}</a>
+                            <p class="source-status">
+                                <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5"/></svg>
+                                {{ source|source_status }}<span class="sep" aria-hidden="true"> · </span><span>{{ platform.name }}</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <span class="source-view">
+                        <a href="{{ path('log_live', {projectId: project.id, source: source.id}) }}" class="icon-link" title="Live tail">
+                            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h12v10H2zM4.5 6.5 6.5 8l-2 1.5M8 10h3"/></svg>
+                            <span class="visually-hidden">Live tail źródła {{ source.name }}</span>
+                        </a>
+                        <a href="{{ path('log_events', {projectId: project.id, source: source.id}) }}" class="icon-link" title="Zdarzenia">
+                            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4h10M3 8h10M3 12h6"/></svg>
+                            <span class="visually-hidden">Zdarzenia źródła {{ source.name }}</span>
+                        </a>
+                    </span>
+
+                    <span class="source-volume">
+                        {% if source.activity and source.activity.lines %}
+                            <svg viewBox="0 0 96 24" aria-hidden="true">
+                                {% for bar in source|activity_bars %}
+                                    <rect x="{{ bar.x }}" y="{{ 24 - bar.height }}" width="3" height="{{ bar.height }}" rx="0.5"/>
+                                {% endfor %}
+                            </svg>
+                            <span>{{ source.activity.lines|number_format(0, ',', ' ') }} {{ source.activity.lines|plural('linia', 'linie', 'linii') }}</span>
+                        {% else %}
+                            <span class="muted">—</span>
+                        {% endif %}
+                    </span>
+
+                    {% if not source.revokedAt %}
+                        <div class="row-menu-wrap" data-controller="dialog">
+                            <details class="row-menu">
+                                <summary title="Więcej">
+                                    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h.01M8 8h.01M12.5 8h.01"/></svg>
+                                    <span class="visually-hidden">Akcje źródła {{ source.name }}</span>
+                                </summary>
+                                <div class="row-menu-list">
+                                    <p class="muted">Token {{ source.tokenPrefix }}…</p>
+                                    <button type="button" class="ghost" data-action="dialog#open" data-dialog-name-param="rotate">Nowy token</button>
+                                    <button type="button" class="ghost danger" data-action="dialog#open" data-dialog-name-param="revoke">Odwołaj</button>
+                                </div>
+                            </details>
+
+                            <dialog data-dialog-target="rotate" aria-labelledby="rotate-{{ source.id }}">
+                                <form method="post" action="{{ path('source_rotate', {projectId: project.id, sourceId: source.id}) }}" data-turbo="false">
+                                    <h2 id="rotate-{{ source.id }}">Wygenerować nowy token?</h2>
+                                    <p class="muted">Obecny token źródła „{{ source.name }}” przestanie działać od razu. Zaktualizuj go w aplikacji, która wysyła logi.</p>
+                                    <input type="hidden" name="_token" value="{{ csrf_token('source_rotate') }}">
+                                    <div class="dialog-actions">
+                                        <button type="submit" formmethod="dialog" class="ghost" formnovalidate autofocus>Anuluj</button>
+                                        <button type="submit">Wygeneruj token</button>
+                                    </div>
+                                </form>
+                            </dialog>
+
+                            <dialog data-dialog-target="revoke" aria-labelledby="revoke-{{ source.id }}">
+                                <form method="post" action="{{ path('source_revoke', {projectId: project.id, sourceId: source.id}) }}" data-turbo="false">
+                                    <h2 id="revoke-{{ source.id }}">Odwołać źródło?</h2>
+                                    <p class="muted">Źródło „{{ source.name }}” przestanie przyjmować logi na stałe. Zebrane logi zostaną.</p>
+                                    <input type="hidden" name="_token" value="{{ csrf_token('source_revoke') }}">
+                                    <div class="dialog-actions">
+                                        <button type="submit" formmethod="dialog" class="ghost" formnovalidate autofocus>Anuluj</button>
+                                        <button type="submit" class="destructive">Odwołaj źródło</button>
+                                    </div>
+                                </form>
+                            </dialog>
+                        </div>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</section>
+{% endblock %}

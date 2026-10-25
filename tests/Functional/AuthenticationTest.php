@@ -12,84 +12,75 @@ use Watchdog\Shared\Domain\Permission;
 
 final class AuthenticationTest extends WebTestCase
 {
+    use SignsIn;
+
     private const string EMAIL = 'user@example.com';
     private const string ADMIN = 'root@example.com';
-    private const string PASSWORD = 'correct horse battery staple';
 
     private KernelBrowser $client;
 
     protected function setUp(): void
     {
         $this->client = self::createClient();
-        $handler = self::getContainer()->get(CreateUser::class);
-        $handler(self::EMAIL, self::PASSWORD);
-        $handler(self::ADMIN, self::PASSWORD, [Role::USER, Role::SUPER_ADMIN]);
+        $createUser = self::getContainer()->get(CreateUser::class);
+        $createUser(self::EMAIL, self::PASSWORD);
+        $createUser(self::ADMIN, self::PASSWORD, [Role::USER, Role::SUPER_ADMIN]);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function json(): array
+    public function testPagesRequireAuthentication(): void
     {
-        $data = json_decode((string) $this->client->getResponse()->getContent(), true, flags: \JSON_THROW_ON_ERROR);
-        self::assertIsArray($data);
+        $this->client->request('GET', '/projects');
+        self::assertResponseRedirects('/login');
 
-        /** @var array<string, mixed> $data */
-        return $data;
-    }
-
-    public function testApiRequiresAuthentication(): void
-    {
-        $this->client->request('GET', '/api/me');
-        self::assertResponseStatusCodeSame(401);
+        $this->client->request('GET', '/login');
+        self::assertResponseIsSuccessful();
+        self::assertResponseHasHeader('Content-Security-Policy');
     }
 
     public function testUserCanLogInAndOut(): void
     {
-        $this->client->jsonRequest('POST', '/api/login', ['email' => self::EMAIL, 'password' => self::PASSWORD]);
+        $this->logIn($this->client, self::EMAIL);
+        self::assertResponseRedirects('/');
+        $this->client->followRedirects();
+
+        $this->client->request('GET', '/debug');
         self::assertResponseIsSuccessful();
-        self::assertResponseHasHeader('Content-Security-Policy');
-        self::assertSame(self::EMAIL, $this->json()['email']);
+        self::assertSelectorTextContains('table.kv', self::EMAIL);
 
-        $this->client->request('GET', '/api/me');
-        self::assertResponseIsSuccessful();
-        self::assertSame([Role::USER], $this->json()['roles']);
-        self::assertSame([], $this->json()['permissions']);
+        $this->client->submitForm('Wyloguj');
+        self::assertSelectorExists('form[action="/login"]');
 
-        $this->client->request('POST', '/api/logout');
-        self::assertResponseStatusCodeSame(204);
-
-        $this->client->request('GET', '/api/me');
-        self::assertResponseStatusCodeSame(401);
+        $this->client->request('GET', '/debug');
+        self::assertSelectorExists('form[action="/login"]');
     }
 
     public function testSuperAdminHasEveryPermission(): void
     {
-        $this->client->jsonRequest('POST', '/api/login', ['email' => self::ADMIN, 'password' => self::PASSWORD]);
-        self::assertResponseIsSuccessful();
+        $this->logIn($this->client, self::ADMIN);
+        $this->client->followRedirects();
 
-        $me = $this->json();
-        self::assertSame([Role::SUPER_ADMIN, Role::USER], $me['roles'], 'sorted');
-        self::assertSame(array_column(Permission::cases(), 'value'), $me['permissions']);
+        $crawler = $this->client->request('GET', '/debug');
+        $text = $crawler->filter('table.kv')->first()->text();
+        self::assertStringContainsString(implode(', ', array_column(Permission::cases(), 'value')), $text);
     }
 
     public function testInvalidCredentialsAreRejected(): void
     {
-        $this->client->jsonRequest('POST', '/api/login', ['email' => self::EMAIL, 'password' => 'wrong password!!']);
-        self::assertResponseStatusCodeSame(401);
-        self::assertArrayHasKey('error', $this->json());
+        $this->logIn($this->client, self::EMAIL, 'wrong password!!');
+        self::assertResponseRedirects('/login');
+        $this->client->followRedirect();
+        self::assertSelectorTextContains('.alert', 'Nieprawidłowy e-mail lub hasło.');
 
-        $this->client->request('GET', '/api/me');
-        self::assertResponseStatusCodeSame(401);
+        $this->client->request('GET', '/projects');
+        self::assertResponseRedirects('/login');
     }
 
-    public function testLoginRejectsNonJsonBody(): void
+    public function testLoginNeedsTheCsrfToken(): void
     {
-        // What a cross-site HTML form could send: must not authenticate (login CSRF).
-        $this->client->request('POST', '/api/login', ['email' => self::EMAIL, 'password' => self::PASSWORD]);
-        self::assertResponseStatusCodeSame(401);
+        $this->client->request('POST', '/login', ['_username' => self::EMAIL, '_password' => self::PASSWORD, '_csrf_token' => 'forged']);
+        self::assertResponseRedirects('/login');
 
-        $this->client->request('GET', '/api/me');
-        self::assertResponseStatusCodeSame(401);
+        $this->client->request('GET', '/projects');
+        self::assertResponseRedirects('/login');
     }
 }

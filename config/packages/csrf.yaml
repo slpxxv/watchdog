@@ -1,0 +1,5 @@
+# Session-backed CSRF tokens: forms, login and logout work without JavaScript.
+framework:
+    form:
+        csrf_protection: true
+    csrf_protection: true

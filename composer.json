@@ -11,12 +11,15 @@
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.7",
         "nelmio/security-bundle": "^3.9",
+        "symfony/asset": "8.1.*",
+        "symfony/asset-mapper": "8.1.*",
         "symfony/clock": "8.1.*",
         "symfony/console": "8.1.*",
         "symfony/doctrine-messenger": "8.1.*",
         "symfony/dotenv": "8.1.*",
         "symfony/expression-language": "8.1.*",
         "symfony/flex": "^2",
+        "symfony/form": "8.1.*",
         "symfony/framework-bundle": "8.1.*",
         "symfony/monolog-bundle": "^4.1",
         "symfony/rate-limiter": "8.1.*",
@@ -24,8 +27,13 @@
         "symfony/runtime": "8.1.*",
         "symfony/scheduler": "8.1.*",
         "symfony/security-bundle": "8.1.*",
+        "symfony/security-csrf": "8.1.*",
         "symfony/serializer": "8.1.*",
+        "symfony/stimulus-bundle": "^3.6",
+        "symfony/translation": "8.1.*",
+        "symfony/twig-bundle": "8.1.*",
         "symfony/uid": "8.1.*",
+        "symfony/ux-turbo": "^3.6",
         "symfony/validator": "8.1.*",
         "symfony/yaml": "8.1.*"
     },
@@ -64,7 +72,8 @@
     "scripts": {
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+            "assets:install %PUBLIC_DIR%": "symfony-cmd",
+            "importmap:install": "symfony-cmd"
         },
         "post-install-cmd": [
             "@auto-scripts"
@@ -112,9 +121,9 @@
         "phpstan/phpstan-symfony": "^2.1",
         "phpunit/phpunit": "^13.4",
         "symfony/browser-kit": "8.1.*",
+        "symfony/css-selector": "8.1.*",
         "symfony/debug-bundle": "8.1.*",
         "symfony/maker-bundle": "*",
-        "symfony/twig-bundle": "8.1.*",
         "symfony/web-profiler-bundle": "8.1.*"
     },
     "name": "slpxxv/watchdog",

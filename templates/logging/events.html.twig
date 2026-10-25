@@ -1,0 +1,41 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Zdarzenia · {{ project.name }} · Watchdog{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Zdarzenia</h1>
+        <p class="muted">{{ project.name }}</p>
+    </div>
+</div>
+
+<div class="console"
+     data-controller="volume"
+     data-volume-from-value="{{ page ? page.from : '' }}"
+     data-volume-to-value="{{ now|date('c') }}">
+    {% include 'logging/_filters.html.twig' with {route: 'log_events'} %}
+    {% include 'logging/_volume.html.twig' %}
+
+    <section class="terminal" aria-label="Logi" data-volume-target="list">
+        {% if not page or not page.items %}
+            <div class="terminal-empty">
+                <p>Brak logów w tym zakresie.</p>
+                {% if not sources %}
+                    <p>Ten projekt nie ma jeszcze źródeł. {% if is_granted('source.manage') %}<a href="{{ path('source_new', {projectId: project.id}) }}">Połącz źródło</a>{% endif %}</p>
+                {% endif %}
+            </div>
+        {% else %}
+            <ol class="log-lines">{% for line in page.items %}{% include 'logging/_line.html.twig' %}{% endfor %}</ol>
+            {% if nextFrame %}
+                <turbo-frame id="{{ nextFrame }}">
+                    <div class="terminal-more"><a href="{{ olderUrl }}">Załaduj starsze</a></div>
+                </turbo-frame>
+            {% endif %}
+        {% endif %}
+    </section>
+</div>
+{% if page %}
+    <p class="retention-note muted">Logi są przechowywane {{ page.retentionDays }} {{ page.retentionDays|plural('dzień', 'dni', 'dni') }}, starsze są usuwane automatycznie.</p>
+{% endif %}
+{% endblock %}

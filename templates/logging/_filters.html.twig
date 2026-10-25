@@ -1,0 +1,43 @@
+{# Filters of the log pages: a GET form, so every view has a shareable URL. #}
+<form class="console-bar" method="get" action="{{ path(route, {projectId: project.id}) }}" data-controller="autosubmit shortcut" data-action="keydown@document->shortcut#focus">
+    <div class="console-query">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8.5 3a5.5 5.5 0 0 1 4.38 8.82l3.65 3.65-1.06 1.06-3.65-3.65A5.5 5.5 0 1 1 8.5 3Zm0 1.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/></svg>
+        <label class="visually-hidden" for="log-q">Szukaj w treści</label>
+        <input id="log-q" name="q" value="{{ query.q }}" type="search" placeholder="Szukaj w treści logów i naciśnij Enter" data-shortcut-target="input">
+    </div>
+
+    {% if live|default(false) %}
+        <button type="button" class="live-toggle on" aria-pressed="false" data-tail-target="toggle" data-action="tail#toggle">
+            <span class="live-dot" aria-hidden="true"></span><span data-tail-target="label">Na żywo</span>
+        </button>
+    {% endif %}
+
+    <div class="console-filters">
+        <label class="visually-hidden" for="log-level">Poziom</label>
+        <select id="log-level" name="level" data-action="change->autosubmit#submit">
+            <option value="">Wszystkie poziomy</option>
+            {% for level in ['debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency'] %}
+                <option value="{{ level }}"{{ query.level == level ? ' selected' }}>od {{ level }}</option>
+            {% endfor %}
+        </select>
+
+        <label class="visually-hidden" for="log-source">Źródło</label>
+        <select id="log-source" name="source" data-action="change->autosubmit#submit">
+            <option value="">Wszystkie źródła</option>
+            {% for source in sources %}
+                <option value="{{ source.id }}"{{ query.source == source.id ? ' selected' }}>{{ source.name }}</option>
+            {% endfor %}
+        </select>
+
+        {% if ranges is defined %}
+            <label class="visually-hidden" for="log-range">Zakres czasu</label>
+            <select id="log-range" name="range" data-action="change->autosubmit#submit">
+                {% for value, range in ranges %}
+                    <option value="{{ value }}"{{ query.range == value ? ' selected' }}>{{ range.label }}</option>
+                {% endfor %}
+            </select>
+        {% endif %}
+
+        <span class="console-count" data-volume-target="count"></span>
+    </div>
+</form>

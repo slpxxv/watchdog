@@ -1,0 +1,7 @@
+# Domain errors reach the pages as a stable messageKey plus parameters (DomainError).
+project.name.invalid: 'Nazwa projektu musi mieć od 1 do %max% znaków.'
+project.not_found: 'Projekt nie istnieje.'
+source.name.invalid: 'Nazwa źródła musi mieć od 1 do %max% znaków.'
+source.not_found: 'Źródło nie istnieje.'
+source.revoked: 'Źródło jest odwołane. Utwórz nowe, żeby dostać token.'
+log.query.invalid: 'Nieprawidłowe zapytanie: %reason%'

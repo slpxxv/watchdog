@@ -1,0 +1,32 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Debug · Watchdog{% endblock %}
+
+{% block content %}
+<div class="page-head"><h1>Debug</h1></div>
+
+<h2>Użytkownik</h2>
+<div class="panel">
+    <table class="kv">
+        <tbody>
+        <tr><th>ID</th><td><code>{{ user.id }}</code></td></tr>
+        <tr><th>E-mail</th><td>{{ user.email }}</td></tr>
+        <tr><th>Role</th><td>{{ user.roles|join(', ') }}</td></tr>
+        <tr><th>Uprawnienia</th><td>{{ user.permissions|join(', ') ?: '—' }}</td></tr>
+        <tr><th>Utworzony</th><td><time datetime="{{ user.createdAt }}" data-controller="local-time" data-local-time-style-value="datetime">{{ user.createdAt|date('Y-m-d H:i') }} UTC</time></td></tr>
+        </tbody>
+    </table>
+</div>
+
+<h2>Środowisko</h2>
+<div class="panel">
+    <table class="kv">
+        <tbody>
+        <tr><th>Symfony</th><td>{{ symfony }}</td></tr>
+        <tr><th>PHP</th><td>{{ php }}</td></tr>
+        <tr><th>Środowisko</th><td>{{ environment }}</td></tr>
+        {% if environment == 'dev' %}<tr><th>Symfony Profiler</th><td><a href="/_profiler" target="_blank">/_profiler</a></td></tr>{% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

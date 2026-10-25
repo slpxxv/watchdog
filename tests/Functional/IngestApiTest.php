@@ -20,6 +20,8 @@ use Watchdog\Project\Application\Command\CreateProject;
 
 final class IngestApiTest extends WebTestCase
 {
+    use SignsIn;
+
     private KernelBrowser $client;
     private string $projectId;
     private string $sourceId;
@@ -133,8 +135,8 @@ final class IngestApiTest extends WebTestCase
     public function testASessionDoesNotOpenTheIngestEndpoint(): void
     {
         self::getContainer()->get(CreateUser::class)('root@example.com', 'correct horse battery staple', [Role::USER, Role::SUPER_ADMIN]);
-        $this->client->jsonRequest('POST', '/api/login', ['email' => 'root@example.com', 'password' => 'correct horse battery staple']);
-        self::assertResponseIsSuccessful();
+        $this->logIn($this->client, 'root@example.com');
+        self::assertResponseRedirects('/');
 
         $this->client->request('POST', '/api/v1/ingest/logs', server: ['CONTENT_TYPE' => 'application/json'], content: '{"message":"x"}');
         self::assertResponseStatusCodeSame(401);

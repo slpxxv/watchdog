@@ -1,0 +1,34 @@
+<li class="log-line lvl-{{ line.level }}" data-id="{{ line.id }}" data-time="{{ line.timestamp }}" data-level="{{ line.level }}">
+    <details>
+        <summary class="log-row">
+            <time datetime="{{ line.timestamp }}" data-controller="local-time" data-local-time-style-value="log">{{ line.timestamp|date('H:i:s') }}</time>
+            <span class="log-level">{{ line.level }}</span>
+            <span class="log-source">{{ line.sourceName ?? '—' }}</span>
+            <span class="log-body">
+                <span class="log-message">{{ line.message|log_text }}</span>
+                {% for field in log_fields(line.context) %}
+                    <span class="log-field"><span class="log-field-key">{{ field[0] }}=</span>{{ field[1] }}</span>
+                {% endfor %}
+            </span>
+        </summary>
+        <div class="log-detail">
+            <p class="log-message-full">{{ line.message|log_text }}</p>
+            <dl>
+                <dt>Czas</dt>
+                <dd><time datetime="{{ line.timestamp }}" data-controller="local-time" data-local-time-style-value="datetime">{{ line.timestamp|date('Y-m-d H:i:s') }} UTC</time></dd>
+                <dt>Przyjęto</dt>
+                <dd><time datetime="{{ line.receivedAt }}" data-controller="local-time" data-local-time-style-value="datetime">{{ line.receivedAt|date('Y-m-d H:i:s') }} UTC</time></dd>
+                <dt>Źródło</dt>
+                <dd>{{ line.sourceName ?? line.sourceId }}</dd>
+                {% for key, value in line.context %}
+                    <dt>{{ key }}</dt>
+                    <dd>{{ value is iterable ? value|json_encode : value|log_text }}</dd>
+                {% endfor %}
+            </dl>
+            {% if line.context %}<pre>{{ log_json(line.context) }}</pre>{% endif %}
+            <span data-controller="clipboard" data-clipboard-text-value="{{ line|json_encode(constant('JSON_PRETTY_PRINT'))|e('html_attr') }}">
+                <button type="button" class="ghost" data-action="clipboard#copy">Kopiuj jako JSON</button>
+            </span>
+        </div>
+    </details>
+</li>

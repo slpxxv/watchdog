@@ -2,11 +2,11 @@
 
 ## Start (dev)
 
-Needs PHP 8.4 (`pdo_pgsql`, `redis`, `intl`), the [Symfony CLI](https://symfony.com/download), Node 22.12+ and Docker
-(only for Postgres and Redis, `compose.yaml`).
+Needs PHP 8.4 (`pdo_pgsql`, `redis`, `intl`), the [Symfony CLI](https://symfony.com/download) and Docker
+(only for Postgres and Redis, `compose.yaml`). There is no Node: pages are Twig, with Stimulus and Turbo served by AssetMapper.
 
 ```bash
-composer install && npm --prefix frontend install
+composer install
 symfony serve -d
 symfony console doctrine:migrations:migrate -n
 ```
@@ -15,8 +15,7 @@ symfony console doctrine:migrations:migrate -n
 ## Quality
 
 ```bash
-composer qa                     # lints, php-cs-fixer, PHPStan, Deptrac, then PHPUnit (needs the test DB)
-npm --prefix frontend run qa    # vue-tsc, ESLint, Prettier, Vitest
+composer qa    # lints, php-cs-fixer, PHPStan, Deptrac, then PHPUnit (needs the test DB)
 ```
 
 CI runs the same commands (`.github/workflows/ci.yaml`); its one required check is "CI OK".
@@ -30,7 +29,7 @@ Each bounded context in `src/<Context>/` has four layers, enforced by Deptrac (`
 | `Domain` | only `doctrine/collections` (Doctrine mapping is XML in Infrastructure) |
 | `Application` | Domain, PSR |
 | `Infrastructure` | Domain, Application, Symfony/Doctrine |
-| `UI` (Http/Console) | Application, Domain, Symfony |
+| `UI` (Http/Console) | Application, Domain, Symfony, PSR |
 
 Contexts: `Identity` (users, roles, login API), `Project` (projects), `Logging` (log sources, ingestion, search,
 live tail, retention). Contexts talk only through each other's `Application/Query`, `Dto` and `Event` (`deptrac.contexts.yaml`).
@@ -55,8 +54,8 @@ src/Identity/
 └── UI/                          driving adapters: Http (thin controllers), Console
 ```
 
-- A request goes **UI → use case → Domain**, and comes back as a **DTO**: `SecurityController` reads the actor
-  from the `CurrentActor` port, calls `GetUser`, returns its `UserDto` as JSON.
+- A request goes **UI → use case → Domain**, and comes back as a **DTO**: `DebugController` reads the actor
+  from the `CurrentActor` port, calls `GetUser` and renders its `UserDto` in a Twig template.
 - Ports are interfaces next to the code that needs them (repositories in `Domain`, the rest in
   `Application/Port`); adapters in `Infrastructure` implement them and autowiring binds them.
 - A use case is one plain invokable service taking its arguments directly (`($renameProject)(id: $id, name: $name)`),

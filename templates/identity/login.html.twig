@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Zaloguj się · Watchdog{% endblock %}
+
+{% block body %}
+<main>
+    <div class="auth">
+        <p class="brand"><span class="brand-mark" aria-hidden="true"></span>Watchdog</p>
+        <form class="panel" method="post" action="{{ path('identity_login') }}" data-turbo="false">
+            <h1>Zaloguj się</h1>
+            {% if failed %}<p class="alert" role="alert">{{ 'login.invalid'|trans }}</p>{% endif %}
+            <div class="field">
+                <label for="email">Adres e-mail</label>
+                <input id="email" name="_username" type="email" value="{{ lastUsername }}" autocomplete="username" required autofocus>
+            </div>
+            <div class="field">
+                <label for="password">Hasło</label>
+                <input id="password" name="_password" type="password" autocomplete="current-password" required>
+            </div>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <button type="submit">Zaloguj się</button>
+        </form>
+    </div>
+</main>
+{% endblock %}
