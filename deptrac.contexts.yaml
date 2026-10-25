@@ -1,11 +1,14 @@
 deptrac:
     paths:
         - ./src
+        - ./app
     layers:
         - name: Identity
           collectors:
               - type: directory
                 value: src/Identity/(?!Application/(Query|Dto)/).*
+              - type: directory
+                value: app/(\w+/Identity/.*|Http/LogoutListener\.php|Command/CreateUserCommand\.php)
         - name: IdentityApi
           collectors:
               - type: directory
@@ -14,6 +17,8 @@ deptrac:
           collectors:
               - type: directory
                 value: src/Project/(?!Application/(Query|Dto|Event)/).*
+              - type: directory
+                value: app/\w+/Project/.*
         - name: ProjectApi
           collectors:
               - type: directory
@@ -22,10 +27,14 @@ deptrac:
           collectors:
               - type: directory
                 value: src/Logging/.*
+              - type: directory
+                value: app/(\w+/Logging/.*|Command/Log\w+Command\.php)
         - name: Shared
           collectors:
               - type: directory
                 value: src/Shared/.*
+              - type: directory
+                value: app/(Http/(?!LogoutListener).*|Kernel\.php|Messaging/Schedule\.php)
     ruleset:
         Identity: [Shared, IdentityApi]
         IdentityApi: [Identity, Shared]

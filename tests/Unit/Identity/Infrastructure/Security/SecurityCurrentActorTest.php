@@ -9,8 +9,8 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\User\InMemoryUser;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Watchdog\Identity\Infrastructure\Security\SecurityCurrentActor;
-use Watchdog\Identity\Infrastructure\Security\SecurityUser;
+use Watchdog\App\Security\Identity\SecurityCurrentActor;
+use Watchdog\App\Security\Identity\SecurityUser;
 use Watchdog\Tests\Double\Identities;
 
 final class SecurityCurrentActorTest extends TestCase

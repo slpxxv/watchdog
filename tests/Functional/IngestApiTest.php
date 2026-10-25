@@ -6,6 +6,7 @@ namespace Watchdog\Tests\Functional;
 
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Watchdog\App\Request\Logging\Ingest\IngestPayloadReader;
 use Watchdog\Identity\Application\Command\CreateUser\CreateUser;
 use Watchdog\Identity\Application\Command\CreateUser\CreateUserHandler;
 use Watchdog\Identity\Domain\Role\Role;
@@ -18,7 +19,6 @@ use Watchdog\Logging\Domain\Log\LogFilter;
 use Watchdog\Logging\Domain\Log\LogLevel;
 use Watchdog\Logging\Domain\Log\LogStore;
 use Watchdog\Logging\Domain\ProjectId;
-use Watchdog\Logging\UI\Http\Ingest\IngestPayloadReader;
 use Watchdog\Project\Application\Command\CreateProject\CreateProject;
 use Watchdog\Project\Application\Command\CreateProject\CreateProjectHandler;
 

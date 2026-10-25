@@ -7,8 +7,8 @@ namespace Watchdog\Tests\Unit\Logging\UI;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
-use Watchdog\Logging\UI\Http\Ingest\IngestPayloadReader;
-use Watchdog\Logging\UI\Http\Ingest\InvalidPayload;
+use Watchdog\App\Request\Logging\Ingest\IngestPayloadReader;
+use Watchdog\App\Request\Logging\Ingest\InvalidPayload;
 
 final class IngestPayloadReaderTest extends TestCase
 {

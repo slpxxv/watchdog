@@ -10,8 +10,8 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\User\InMemoryUser;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Watchdog\Identity\Infrastructure\Security\PermissionVoter;
-use Watchdog\Identity\Infrastructure\Security\SecurityUser;
+use Watchdog\App\Security\Identity\PermissionVoter;
+use Watchdog\App\Security\Identity\SecurityUser;
 use Watchdog\Shared\Domain\Permission;
 use Watchdog\Tests\Double\Identities;
 

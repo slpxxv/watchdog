@@ -1,10 +1,10 @@
 security:
     password_hashers:
-        Watchdog\Identity\Infrastructure\Security\SecurityUser: 'auto'
+        Watchdog\App\Security\Identity\SecurityUser: 'auto'
 
     providers:
         app_users:
-            id: Watchdog\Identity\Infrastructure\Security\SecurityUserProvider
+            id: Watchdog\App\Security\Identity\SecurityUserProvider
 
     firewalls:
         dev:
@@ -15,7 +15,7 @@ security:
             pattern: ^/api/v1/ingest/
             stateless: true
             access_token:
-                token_handler: Watchdog\Logging\Infrastructure\Security\SourceTokenHandler
+                token_handler: Watchdog\App\Security\Logging\SourceTokenHandler
         main:
             lazy: true
             provider: app_users
@@ -39,7 +39,7 @@ security:
 when@test:
     security:
         password_hashers:
-            Watchdog\Identity\Infrastructure\Security\SecurityUser:
+            Watchdog\App\Security\Identity\SecurityUser:
                 algorithm: auto
                 cost: 4
                 time_cost: 3

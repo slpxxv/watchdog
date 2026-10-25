@@ -7,3 +7,6 @@ services:
 
     Watchdog\:
         resource: '../src/'
+
+    Watchdog\App\:
+        resource: '../app/'

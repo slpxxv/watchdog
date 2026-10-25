@@ -6,8 +6,8 @@ namespace Watchdog\Tests\Integration\Identity;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
+use Watchdog\App\Security\Identity\SecurityUser;
 use Watchdog\Identity\Application\Port\PasswordHasher;
-use Watchdog\Identity\Infrastructure\Security\SecurityUser;
 
 final class SymfonyPasswordHasherTest extends KernelTestCase
 {

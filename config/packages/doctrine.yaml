@@ -15,19 +15,19 @@ doctrine:
             Identity:
                 type: xml
                 is_bundle: false
-                dir: '%kernel.project_dir%/src/Identity/Infrastructure/Doctrine/Mapping'
+                dir: '%kernel.project_dir%/app/Doctrine/Identity/Mapping'
                 prefix: 'Watchdog\Identity\Domain'
                 alias: Identity
             Project:
                 type: xml
                 is_bundle: false
-                dir: '%kernel.project_dir%/src/Project/Infrastructure/Doctrine/Mapping'
+                dir: '%kernel.project_dir%/app/Doctrine/Project/Mapping'
                 prefix: 'Watchdog\Project\Domain'
                 alias: Project
             Logging:
                 type: xml
                 is_bundle: false
-                dir: '%kernel.project_dir%/src/Logging/Infrastructure/Doctrine/Mapping'
+                dir: '%kernel.project_dir%/app/Doctrine/Logging/Mapping'
                 prefix: 'Watchdog\Logging\Domain'
                 alias: Logging
 

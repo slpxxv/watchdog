@@ -6,6 +6,7 @@ namespace Watchdog\Tests\Unit\Shared\UI\Http\Problem;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Watchdog\App\Http\Problem\DomainErrorMapper;
 use Watchdog\Identity\Application\Exception\WeakPassword;
 use Watchdog\Identity\Domain\Role\Exception\CannotDeleteSystemRole;
 use Watchdog\Identity\Domain\Role\Exception\RoleAlreadyExists;
@@ -16,7 +17,6 @@ use Watchdog\Identity\Domain\User\Exception\UserAlreadyExists;
 use Watchdog\Identity\Domain\User\Exception\UserNotFound;
 use Watchdog\Identity\Domain\User\UserId;
 use Watchdog\Shared\Domain\Error\DomainError;
-use Watchdog\Shared\UI\Http\Problem\DomainErrorMapper;
 
 final class DomainErrorMapperTest extends TestCase
 {

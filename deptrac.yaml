@@ -1,7 +1,9 @@
 deptrac:
   paths:
     - ./src
+    - ./app
   layers:
+    # src/ is the domain: plain PHP, no framework.
     - name: Domain
       collectors:
         - type: directory
@@ -10,14 +12,11 @@ deptrac:
       collectors:
         - type: directory
           value: src/\w+/Application/.*
-    - name: Infrastructure
+    # app/ is the Symfony application: controllers, Doctrine, security, messaging.
+    - name: App
       collectors:
         - type: directory
-          value: src/\w+/Infrastructure/.*
-    - name: UI
-      collectors:
-        - type: directory
-          value: src/\w+/UI/.*
+          value: app/.*
     # The one library the domain may use: to-many associations need a Collection.
     - name: Collections
       collectors:
@@ -34,5 +33,4 @@ deptrac:
   ruleset:
     Domain: [Collections]
     Application: [Domain, Collections, Psr]
-    Infrastructure: [Domain, Application, Collections, Framework, Psr]
-    UI: [Application, Domain, Framework]
+    App: [Domain, Application, Collections, Framework, Psr]

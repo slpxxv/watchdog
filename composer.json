@@ -41,7 +41,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Watchdog\\": "src/"
+            "Watchdog\\": "src/",
+            "Watchdog\\App\\": "app/"
         }
     },
     "autoload-dev": {

@@ -2,9 +2,10 @@ parameters:
     level: max
     paths:
         - src/
+        - app/
         - tests/
     tmpDir: .phpstan.cache
     symfony:
-        containerXmlPath: var/cache/dev/Watchdog_KernelDevDebugContainer.xml
+        containerXmlPath: var/cache/dev/Watchdog_App_KernelDevDebugContainer.xml
     doctrine:
         objectManagerLoader: tests/object-manager.php

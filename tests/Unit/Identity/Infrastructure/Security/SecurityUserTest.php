@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Watchdog\Tests\Unit\Identity\Infrastructure\Security;
 
 use PHPUnit\Framework\TestCase;
-use Watchdog\Identity\Infrastructure\Security\SecurityUser;
+use Watchdog\App\Security\Identity\SecurityUser;
 use Watchdog\Shared\Domain\Permission;
 use Watchdog\Tests\Double\Identities;
 
