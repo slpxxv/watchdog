@@ -34,6 +34,7 @@ final class CreateSourceController extends AbstractController
         $created = ($this->createSource)(
             projectId: $projectId,
             name: $request->name,
+            platform: $request->platform,
         );
 
         // The token is shown once; keep it out of any shared or browser cache.

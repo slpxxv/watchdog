@@ -15,10 +15,15 @@ final readonly class SourceDto
         public string $tokenPrefix,
         public string $createdAt,
         public ?string $revokedAt,
+        public string $platform,
+        public ?SourceActivityDto $activity = null,
     ) {
     }
 
-    public static function fromSource(Source $source): self
+    /**
+     * $activity only where it was looked up (the source list); null elsewhere.
+     */
+    public static function fromSource(Source $source, ?SourceActivityDto $activity = null): self
     {
         return new self(
             id: $source->id()->value,
@@ -27,6 +32,8 @@ final readonly class SourceDto
             tokenPrefix: $source->tokenPrefix(),
             createdAt: $source->createdAt()->format(\DATE_ATOM),
             revokedAt: $source->revokedAt()?->format(\DATE_ATOM),
+            platform: $source->platform()->value,
+            activity: $activity,
         );
     }
 }

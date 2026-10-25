@@ -89,6 +89,11 @@ final class LogMaintenanceTest extends TestCase
                 return [];
             }
 
+            public function volumeByHour(ProjectId $projectId, \DateTimeImmutable $since): array
+            {
+                return [];
+            }
+
             public function deleteProjectBatch(ProjectId $projectId, int $limit): int
             {
                 ++$this->calls;

@@ -17,6 +17,11 @@
             </options>
         </field>
         <field name="tokenPrefix" column="token_prefix" length="16"/>
+        <field name="platform" length="16">
+            <options>
+                <option name="default">http</option>
+            </options>
+        </field>
         <field name="createdAt" column="created_at" type="datetime_immutable"/>
         <field name="revokedAt" column="revoked_at" type="datetime_immutable" nullable="true"/>
     </entity>

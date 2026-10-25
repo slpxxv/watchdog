@@ -30,6 +30,13 @@ interface LogStore
     public function tail(LogFilter $filter, int $afterId, \DateTimeImmutable $now, int $limit): array;
 
     /**
+     * Line counts per source and hour (UTC) for lines with a timestamp from $since on.
+     *
+     * @return list<SourceVolume>
+     */
+    public function volumeByHour(ProjectId $projectId, \DateTimeImmutable $since): array;
+
+    /**
      * Deletes up to $limit lines of the project; returns how many went.
      */
     public function deleteProjectBatch(ProjectId $projectId, int $limit): int;

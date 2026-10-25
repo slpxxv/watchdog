@@ -10,6 +10,7 @@ use Watchdog\Logging\Application\Dto\SourceDto;
 use Watchdog\Logging\Application\Port\ProjectCatalog;
 use Watchdog\Logging\Domain\Exception\UnknownProject;
 use Watchdog\Logging\Domain\ProjectId;
+use Watchdog\Logging\Domain\Source\Platform;
 use Watchdog\Logging\Domain\Source\Source;
 use Watchdog\Logging\Domain\Source\SourceRepository;
 use Watchdog\Logging\Domain\Source\SourceToken;
@@ -26,6 +27,7 @@ final readonly class CreateSource
     public function __invoke(
         string $projectId,
         string $name,
+        Platform $platform = Platform::Http,
     ): NewSourceDto {
         $project = ProjectId::fromString($projectId);
         if (!$this->projects->exists($project)) {
@@ -39,6 +41,7 @@ final readonly class CreateSource
             name: $name,
             token: $token,
             now: $this->clock->now(),
+            platform: $platform,
         );
 
         $this->sources->save($source);

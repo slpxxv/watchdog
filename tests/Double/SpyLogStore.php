@@ -9,6 +9,7 @@ use Watchdog\Logging\Domain\Log\LogEntry;
 use Watchdog\Logging\Domain\Log\LogFilter;
 use Watchdog\Logging\Domain\Log\LogPage;
 use Watchdog\Logging\Domain\Log\LogStore;
+use Watchdog\Logging\Domain\Log\SourceVolume;
 use Watchdog\Logging\Domain\ProjectId;
 
 /**
@@ -23,6 +24,9 @@ final class SpyLogStore implements LogStore
     public ?LogCursor $lastCursor = null;
     public ?int $lastLimit = null;
     public ?int $lastAfterId = null;
+    /** @var list<SourceVolume> */
+    public array $volumes = [];
+    public ?\DateTimeImmutable $lastSince = null;
 
     public function append(array $entries): void
     {
@@ -41,6 +45,13 @@ final class SpyLogStore implements LogStore
         [$this->lastFilter, $this->lastAfterId, $this->lastLimit] = [$filter, $afterId, $limit];
 
         return $this->entries;
+    }
+
+    public function volumeByHour(ProjectId $projectId, \DateTimeImmutable $since): array
+    {
+        $this->lastSince = $since;
+
+        return $this->volumes;
     }
 
     public function deleteProjectBatch(ProjectId $projectId, int $limit): int

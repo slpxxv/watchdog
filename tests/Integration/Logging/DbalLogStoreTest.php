@@ -12,6 +12,7 @@ use Watchdog\Logging\Domain\Log\LogEntry;
 use Watchdog\Logging\Domain\Log\LogFilter;
 use Watchdog\Logging\Domain\Log\LogLevel;
 use Watchdog\Logging\Domain\Log\LogStore;
+use Watchdog\Logging\Domain\Log\SourceVolume;
 use Watchdog\Logging\Domain\ProjectId;
 use Watchdog\Logging\Domain\Source\SourceId;
 
@@ -143,6 +144,30 @@ final class DbalLogStoreTest extends KernelTestCase
         // From the start: everything from the last hour, in arrival order; the 10:00 line is outside the window.
         $all = $this->logs->tail(new LogFilter($this->project, minLevel: LogLevel::Info), 0, $now, 100);
         self::assertSame(['seen a while ago', 'late commit', 'new'], array_map(static fn (LogEntry $e): string => $e->message, $all));
+    }
+
+    public function testVolumeByHourCountsPerSourceAndUtcHourFromTheBound(): void
+    {
+        $this->logs->append([
+            $this->entry('too early', self::DAY.' 10:59:59'),
+            $this->entry('a', self::DAY.' 11:00:00'),
+            $this->entry('b', self::DAY.' 11:45:10'),
+            $this->entry('c', self::DAY.' 13:05:00'),
+            $this->entry('worker', self::DAY.' 11:30:00', source: $this->worker),
+            $this->entry('other project', self::DAY.' 11:30:00', project: $this->otherProject),
+        ]);
+
+        $volumes = $this->logs->volumeByHour($this->project, new \DateTimeImmutable(self::DAY.' 11:00:00 UTC'));
+
+        $rows = array_map(static fn (SourceVolume $v): string => \sprintf(
+            '%s %s %d %s',
+            '00000000-0000-7000-c000-000000000001' === $v->sourceId->value ? 'api' : 'worker',
+            $v->hour->setTimezone(new \DateTimeZone('UTC'))->format('H:i'),
+            $v->lines,
+            $v->lastAt->setTimezone(new \DateTimeZone('UTC'))->format('H:i:s'),
+        ), $volumes);
+        sort($rows);
+        self::assertSame(['api 11:00 2 11:45:10', 'api 13:00 1 13:05:00', 'worker 11:00 1 11:30:00'], $rows);
     }
 
     public function testDeleteProjectBatchNeverTouchesOtherPartitionsRows(): void

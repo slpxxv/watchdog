@@ -25,6 +25,8 @@ class Source
 
     private string $tokenPrefix;
 
+    private string $platform;
+
     private ?\DateTimeImmutable $revokedAt = null;
 
     private function __construct(
@@ -32,21 +34,30 @@ class Source
         ProjectId $projectId,
         string $name,
         SourceToken $token,
+        Platform $platform,
         private \DateTimeImmutable $createdAt,
     ) {
         $this->id = $id->value;
         $this->projectId = $projectId->value;
+        $this->platform = $platform->value;
         $this->rename($name);
         $this->useToken($token);
     }
 
-    public static function create(SourceId $id, ProjectId $projectId, string $name, SourceToken $token, \DateTimeImmutable $now): self
-    {
+    public static function create(
+        SourceId $id,
+        ProjectId $projectId,
+        string $name,
+        SourceToken $token,
+        \DateTimeImmutable $now,
+        Platform $platform = Platform::Http,
+    ): self {
         return new self(
             id: $id,
             projectId: $projectId,
             name: $name,
             token: $token,
+            platform: $platform,
             createdAt: $now,
         );
     }
@@ -104,6 +115,11 @@ class Source
     public function tokenPrefix(): string
     {
         return $this->tokenPrefix;
+    }
+
+    public function platform(): Platform
+    {
+        return Platform::from($this->platform);
     }
 
     public function createdAt(): \DateTimeImmutable

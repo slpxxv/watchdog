@@ -110,6 +110,27 @@ final class SourceApiTest extends WebTestCase
         self::assertStringNotContainsString($source['token'], (string) $this->client->getResponse()->getContent());
     }
 
+    public function testListShowsThePlatformAndTheLastDayOfActivity(): void
+    {
+        $this->logIn(self::ADMIN);
+        $projectId = $this->createProject();
+        $this->client->jsonRequest('POST', "/api/projects/{$projectId}/sources", ['name' => 'Shipper', 'platform' => 'fluent-bit']);
+        self::assertResponseStatusCodeSame(201);
+        $source = $this->json()['source'];
+        self::assertIsArray($source);
+        self::assertSame('fluent-bit', $source['platform']);
+        self::assertNull($source['activity'], 'looked up only for the list');
+
+        $this->client->jsonRequest('POST', "/api/projects/{$projectId}/sources", ['name' => 'Bad', 'platform' => 'carrier-pigeon']);
+        self::assertResponseStatusCodeSame(422);
+
+        $this->client->request('GET', "/api/projects/{$projectId}/sources");
+        $list = $this->json();
+        self::assertCount(1, $list);
+        self::assertIsArray($list[0]);
+        self::assertEquals(['lines' => 0, 'lastLogAt' => null, 'hourly' => array_fill(0, 24, 0)], $list[0]['activity']);
+    }
+
     public function testRotationReplacesTheTokenAndRevokeIsFinal(): void
     {
         $this->logIn(self::ADMIN);

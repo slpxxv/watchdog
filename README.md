@@ -65,7 +65,7 @@ src/Identity/
 
 ## Sending logs
 
-Each project has **sources**: an app, a server or a shipper. Creating one (project page → Źródła) shows its token
+Each project has **sources**: an app, a server or a shipper. Creating one (Źródła → Połącz źródło) shows its token
 once; only a hash is stored. Send logs with that token:
 
 ```

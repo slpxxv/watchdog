@@ -13,6 +13,7 @@ use Watchdog\Logging\Domain\Log\LogFilter;
 use Watchdog\Logging\Domain\Log\LogLevel;
 use Watchdog\Logging\Domain\Log\LogPage;
 use Watchdog\Logging\Domain\Log\LogStore;
+use Watchdog\Logging\Domain\Log\SourceVolume;
 use Watchdog\Logging\Domain\ProjectId;
 use Watchdog\Logging\Domain\Source\SourceId;
 
@@ -122,6 +123,23 @@ final readonly class DbalLogStore implements LogStore
             $params,
             $types,
         ));
+    }
+
+    public function volumeByHour(ProjectId $projectId, \DateTimeImmutable $since): array
+    {
+        // ponytail: counts the rows each time; a per-hour rollup table when projects reach millions of lines a day.
+        $rows = $this->connection->fetchAllAssociative(
+            "SELECT source_id, date_trunc('hour', timestamp, 'UTC') AS hour, count(*) AS lines, max(timestamp) AS last_at
+             FROM log_entry WHERE project_id = :projectId AND timestamp >= :since GROUP BY 1, 2",
+            ['projectId' => $projectId->value, 'since' => $since->format(self::TIMESTAMP)],
+        );
+
+        return array_map(static fn (array $row): SourceVolume => new SourceVolume(
+            sourceId: SourceId::fromString(self::string($row, 'source_id')),
+            hour: new \DateTimeImmutable(self::string($row, 'hour')),
+            lines: self::int($row, 'lines'),
+            lastAt: new \DateTimeImmutable(self::string($row, 'last_at')),
+        ), $rows);
     }
 
     public function deleteProjectBatch(ProjectId $projectId, int $limit): int
