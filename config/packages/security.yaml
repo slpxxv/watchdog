@@ -10,24 +10,34 @@ security:
         dev:
             pattern: ^/(_profiler|_wdt)/
             security: false
+        # Log shippers: a source token on every request, no session, no cookies.
+        ingest:
+            pattern: ^/api/v1/ingest/
+            stateless: true
+            access_token:
+                token_handler: Watchdog\Logging\Infrastructure\Security\SourceTokenHandler
         main:
             lazy: true
             provider: app_users
-            # Session cookie auth for the same-origin SPA. CSRF: the cookie is SameSite=Lax and
-            # json_login only accepts a JSON body, which a cross-site form cannot send.
-            json_login:
+            # Session cookie auth for the server-rendered pages. The login form and logout carry a CSRF token.
+            form_login:
+                login_path: identity_login
                 check_path: identity_login
-                username_path: email
-                password_path: password
+                enable_csrf: true
+                default_target_path: home
             logout:
-                path: /api/logout
+                path: identity_logout
+                target: identity_login
+                enable_csrf: true
             login_throttling:
                 max_attempts: 5
                 interval: '15 minutes'
 
     access_control:
-        - { path: ^/api/(login|logout)$, roles: PUBLIC_ACCESS }
-        - { path: ^/api, roles: ROLE_USER }
+        - { path: ^/api/v1/ingest/, roles: ROLE_INGEST }
+        - { path: ^/(login$|assets/), roles: PUBLIC_ACCESS }
+        - { path: ^/(_profiler|_wdt|_error), roles: PUBLIC_ACCESS }
+        - { path: ^/, roles: ROLE_USER }
 
 when@test:
     security:

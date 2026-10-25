@@ -91,9 +91,11 @@ a controller or a service call for a service, not just "it didn't throw."
 (PHPUnit). CI (`.github/workflows/ci.yaml`) runs only the parts a pull request
 touches; its single required check is "CI OK".
 
-Frontend (`frontend/`, Vue + TypeScript): `npm --prefix frontend run qa` runs
-`vue-tsc`, ESLint, the Prettier check and Vitest. Tests sit next to the code
-(`*.test.ts`); `npm --prefix frontend run format` applies Prettier.
+Pages are server-rendered: Twig in `templates/`, Stimulus controllers and the
+stylesheet in `assets/` (AssetMapper, no Node, no bundler). Behaviour that needs
+JavaScript lives in a Stimulus controller; everything else is plain HTML and
+forms, tested with `WebTestCase` like any controller. In production run
+`bin/console asset-map:compile` to publish the assets to `public/assets/`.
 
 ## Code style
 

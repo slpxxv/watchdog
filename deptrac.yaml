@@ -35,4 +35,4 @@ deptrac:
     Domain: [Collections]
     Application: [Domain, Collections, Psr]
     Infrastructure: [Domain, Application, Collections, Framework, Psr]
-    UI: [Application, Domain, Framework]
+    UI: [Application, Domain, Framework, Psr]

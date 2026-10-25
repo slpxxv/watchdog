@@ -6,8 +6,7 @@ namespace Watchdog\Tests\Unit\Identity\Application;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Clock\MockClock;
-use Watchdog\Identity\Application\Command\CreateUser\CreateUser;
-use Watchdog\Identity\Application\Command\CreateUser\CreateUserHandler;
+use Watchdog\Identity\Application\Command\CreateUser;
 use Watchdog\Identity\Application\Port\PasswordHasher;
 use Watchdog\Identity\Application\Service\Actor;
 use Watchdog\Identity\Application\Service\RoleResolver;
@@ -22,14 +21,14 @@ abstract class AclTestCase extends TestCase
     protected InMemoryUserRepository $users;
     protected InMemoryRoleRepository $roles;
     protected Actor $actor;
-    protected CreateUserHandler $createUser;
+    protected CreateUser $createUser;
 
     protected function setUp(): void
     {
         $this->users = new InMemoryUserRepository();
         $this->roles = InMemoryRoleRepository::withSystemRoles();
         $this->actor = new Actor($this->users);
-        $this->createUser = new CreateUserHandler(
+        $this->createUser = new CreateUser(
             $this->users,
             new RoleResolver($this->roles),
             new class implements PasswordHasher {
@@ -47,7 +46,7 @@ abstract class AclTestCase extends TestCase
      */
     protected function user(string $email, array $roles = [Role::USER]): UserId
     {
-        return ($this->createUser)(new CreateUser($email, 'correct horse battery', $roles));
+        return ($this->createUser)($email, 'correct horse battery', $roles);
     }
 
     /**

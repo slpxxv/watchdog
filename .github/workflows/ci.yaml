@@ -29,7 +29,6 @@ jobs:
     timeout-minutes: 5
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
-      frontend: ${{ steps.filter.outputs.frontend }}
     steps:
       # On pull_request the checkout is the merge commit; HEAD^1 is the base branch tip.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -40,20 +39,15 @@ jobs:
       - id: filter
         env:
           EVENT: ${{ github.event_name }}
-          BACKEND: '^(src|tests|config|migrations|bin|public|templates|translations)/|^(composer\.(json|lock)|symfony\.lock|\.env.*|phpunit\.dist\.xml|phpstan\.dist\.neon|deptrac.*\.yaml|\.php-cs-fixer\.dist\.php|compose.*\.yaml)$|^\.github/(workflows/ci\.yaml|actions/)'
-          FRONTEND: '^frontend/|^\.editorconfig$|^\.github/workflows/ci\.yaml$'
+          BACKEND: '^(src|tests|config|migrations|bin|public|templates|translations|assets)/|^(composer\.(json|lock)|symfony\.lock|importmap\.php|\.env.*|phpunit\.dist\.xml|phpstan\.dist\.neon|deptrac.*\.yaml|\.php-cs-fixer\.dist\.php|compose.*\.yaml)$|^\.github/(workflows/ci\.yaml|actions/)'
         run: |
           if [ "$EVENT" != pull_request ]; then
             echo "backend=true" >> "$GITHUB_OUTPUT"
-            echo "frontend=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           files=$(git diff --name-only HEAD^1 HEAD)
           printf 'Changed files:\n%s\n' "$files"
-          for part in backend frontend; do
-            pattern=$([ $part = backend ] && echo "$BACKEND" || echo "$FRONTEND")
-            if grep -qE "$pattern" <<<"$files"; then echo "$part=true"; else echo "$part=false"; fi | tee -a "$GITHUB_OUTPUT"
-          done
+          if grep -qE "$BACKEND" <<<"$files"; then echo "backend=true"; else echo "backend=false"; fi | tee -a "$GITHUB_OUTPUT"
 
   backend-static:
     name: Backend (lint, PHPStan, Deptrac)
@@ -103,32 +97,9 @@ jobs:
           bin/console doctrine:schema:validate --env=test
       - run: composer qa:tests
 
-  frontend:
-    name: Frontend (type-check, lint, format, test, build)
-    needs: changes
-    if: needs.changes.outputs.frontend == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    defaults:
-      run:
-        working-directory: frontend
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: frontend/.nvmrc
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
-      - run: npm ci
-      - run: npm audit --omit=dev --audit-level=high
-      - run: npm run qa
-      - run: npm run build
-
   ci-ok:
     name: CI OK
-    needs: [changes, backend-static, backend-tests, frontend]
+    needs: [changes, backend-static, backend-tests]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5

@@ -1,0 +1,44 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ heading }} · Watchdog{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Połącz źródło</h1>
+        <p class="muted">{{ project.name }}</p>
+    </div>
+</div>
+
+<section class="panel connect" aria-labelledby="connect-title">
+    <h2 id="connect-title">{{ heading }}</h2>
+    <p class="muted">Skopiuj token teraz. Po opuszczeniu tej strony nie da się go już wyświetlić.</p>
+    <div class="token-box" data-controller="clipboard">
+        <code data-clipboard-target="source">{{ created.token }}</code>
+        <button type="button" class="ghost" data-action="clipboard#copy">Kopiuj</button>
+    </div>
+
+    <h3>Konfiguracja</h3>
+    <div data-controller="tabs">
+        <nav class="tabs" aria-label="Platforma">
+            {% for id, p in platforms() %}
+                <button type="button" aria-pressed="{{ id == platform ? 'true' : 'false' }}" data-tabs-target="tab" data-tabs-name-param="{{ id }}" data-action="tabs#select">{{ p.name }}</button>
+            {% endfor %}
+        </nav>
+        {% for id, p in platforms() %}
+            <div class="setup" data-tabs-target="panel" data-name="{{ id }}"{{ id != platform ? ' hidden' }} data-controller="clipboard">
+                <pre data-clipboard-target="source">{{ setup_snippet(id, created.token) }}</pre>
+                <button type="button" class="ghost" data-action="clipboard#copy">Kopiuj</button>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="connect-actions" data-controller="first-log" data-first-log-url-value="{{ path('log_tail', {projectId: project.id, source: created.source.id}) }}">
+        <p class="connect-status" role="status" data-first-log-target="status">
+            <span class="live-dot" aria-hidden="true"></span>
+            <span data-first-log-target="text">Czekam na pierwszy log…</span>
+        </p>
+        <a href="{{ path('log_live', {projectId: project.id, source: created.source.id}) }}" class="button">Otwórz live tail</a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Projekty · Watchdog{% endblock %}
+
+{% block content %}
+{% set count = projects|length %}
+<div class="page-head">
+    <div>
+        <h1>Projekty</h1>
+        <p class="muted">{{ count }} {{ count == 1 ? 'projekt' : (count % 10 in 2..4 and count % 100 not in 12..14 ? 'projekty' : 'projektów') }}</p>
+    </div>
+</div>
+
+<section class="panel" aria-label="Lista projektów">
+    {% if is_granted('project.manage') %}
+        {{ form_start(form, {attr: {class: 'panel-head inline'}}) }}
+            {% for error in form.vars.errors %}<p class="alert" role="alert">{{ error.message }}</p>{% endfor %}
+            {{ form_errors(form.name) }}
+            <label for="{{ form.name.vars.id }}" class="visually-hidden">Nazwa nowego projektu</label>
+            {{ form_widget(form.name, {attr: {required: true}}) }}
+            <button type="submit">Dodaj projekt</button>
+            {{ form_widget(form._token) }}
+        {{ form_end(form, {render_rest: false}) }}
+    {% endif %}
+
+    {% if not projects %}
+        <p class="empty">{{ is_granted('project.manage') ? 'Nie masz jeszcze projektów. Wpisz nazwę powyżej, żeby dodać pierwszy.' : 'Nie ma jeszcze żadnych projektów.' }}</p>
+    {% else %}
+        <ul class="rows">
+            {% for project in projects %}
+                <li class="row">
+                    <a href="{{ path('log_live', {projectId: project.id}) }}" class="row-name row-link">{{ project.name }}</a>
+                    <time class="row-meta" datetime="{{ project.createdAt }}" data-controller="local-time" data-local-time-style-value="date">{{ project.createdAt|date('Y-m-d') }}</time>
+                    {% if is_granted('project.manage') %}
+                        <span class="row-actions" data-controller="dialog">
+                            <button type="button" class="ghost" data-action="dialog#open" data-dialog-target="opener" data-dialog-name-param="rename">Zmień nazwę</button>
+                            <button type="button" class="ghost danger" data-action="dialog#open" data-dialog-name-param="delete">Usuń</button>
+
+                            <dialog data-dialog-target="rename" aria-labelledby="rename-{{ project.id }}">
+                                <form method="post" action="{{ path('project_rename', {projectId: project.id}) }}" data-turbo="false">
+                                    <h2 id="rename-{{ project.id }}">Zmień nazwę projektu</h2>
+                                    <label for="name-{{ project.id }}" class="visually-hidden">Nowa nazwa projektu „{{ project.name }}”</label>
+                                    <input id="name-{{ project.id }}" name="project[name]" value="{{ project.name }}" required maxlength="100" autofocus>
+                                    <input type="hidden" name="project[_token]" value="{{ csrf_token('project') }}">
+                                    <div class="dialog-actions">
+                                        <button type="submit" formmethod="dialog" class="ghost" formnovalidate>Anuluj</button>
+                                        <button type="submit">Zapisz</button>
+                                    </div>
+                                </form>
+                            </dialog>
+
+                            <dialog data-dialog-target="delete" aria-labelledby="delete-{{ project.id }}">
+                                <form method="post" action="{{ path('project_delete', {projectId: project.id}) }}" data-turbo="false">
+                                    <h2 id="delete-{{ project.id }}">Usunąć projekt?</h2>
+                                    <p class="muted">Projekt „{{ project.name }}” zostanie usunięty na stałe.</p>
+                                    <input type="hidden" name="_token" value="{{ csrf_token('project_delete') }}">
+                                    <div class="dialog-actions">
+                                        <button type="submit" formmethod="dialog" class="ghost" formnovalidate autofocus>Anuluj</button>
+                                        <button type="submit" class="destructive">Usuń projekt</button>
+                                    </div>
+                                </form>
+                            </dialog>
+                        </span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</section>
+{% endblock %}

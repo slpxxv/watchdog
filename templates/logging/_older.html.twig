@@ -1,0 +1,10 @@
+<turbo-frame id="{{ frame }}">
+    {% if page %}
+        <ol class="log-lines">{% for line in page.items %}{% include 'logging/_line.html.twig' %}{% endfor %}</ol>
+        {% if nextFrame %}
+            <turbo-frame id="{{ nextFrame }}">
+                <div class="terminal-more"><a href="{{ olderUrl }}">Załaduj starsze</a></div>
+            </turbo-frame>
+        {% endif %}
+    {% endif %}
+</turbo-frame>

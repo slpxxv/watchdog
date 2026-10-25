@@ -9,15 +9,14 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Watchdog\Identity\Application\Command\CreateUser\CreateUser;
-use Watchdog\Identity\Application\Command\CreateUser\CreateUserHandler;
+use Watchdog\Identity\Application\Command\CreateUser;
 use Watchdog\Identity\Domain\Role\Role;
 use Watchdog\Shared\Domain\Error\DomainError;
 
 #[AsCommand(name: 'app:user:create', description: 'Creates a user account')]
 final readonly class CreateUserCommand
 {
-    public function __construct(private CreateUserHandler $handler)
+    public function __construct(private CreateUser $handler)
     {
     }
 
@@ -30,7 +29,7 @@ final readonly class CreateUserCommand
         #[Option('Grant the super admin role')] bool $admin = false,
         #[Option('Role code to assign (repeatable)')] array $role = [],
     ): int {
-        $password = $io->askHidden('Password (min. '.CreateUserHandler::MIN_PASSWORD_LENGTH.' chars)');
+        $password = $io->askHidden('Password (min. '.CreateUser::MIN_PASSWORD_LENGTH.' chars)');
         if (!\is_string($password)) {
             $io->error('Password is required.');
 
@@ -40,11 +39,11 @@ final readonly class CreateUserCommand
         $roles = [Role::USER, ...$role, ...($admin ? [Role::SUPER_ADMIN] : [])];
 
         try {
-            $id = ($this->handler)(new CreateUser(
+            $id = ($this->handler)(
                 email: $email,
                 plainPassword: $password,
                 roleCodes: $roles,
-            ));
+            );
         } catch (DomainError $e) {
             $io->error($e->getMessage());
 

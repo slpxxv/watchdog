@@ -1,0 +1,35 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Live tail · {{ project.name }} · Watchdog{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Live tail</h1>
+        <p class="muted">{{ project.name }}</p>
+    </div>
+</div>
+
+<div class="console"
+     data-controller="tail volume"
+     data-tail-url-value="{{ tailUrl }}"
+     data-tail-last-id-value="{{ tail ? tail.lastId : 0 }}"
+     data-volume-live-value="true"
+     data-action="tail:updated->volume#render">
+    {% include 'logging/_filters.html.twig' with {route: 'log_live', live: true} %}
+    {% include 'logging/_volume.html.twig' %}
+
+    <section class="terminal" aria-label="Logi" data-tail-target="scroller" data-volume-target="list" data-action="scroll->tail#scrolled">
+        <div class="terminal-empty" data-tail-target="empty"{{ tail and tail.items ? ' hidden' }}>
+            <p>Czekam na nowe linie…</p>
+            {% if not sources %}
+                <p>Ten projekt nie ma jeszcze źródeł. {% if is_granted('source.manage') %}<a href="{{ path('source_new', {projectId: project.id}) }}">Połącz źródło</a>{% endif %}</p>
+            {% endif %}
+        </div>
+        <p class="alert" role="alert" data-tail-target="error" hidden></p>
+        <ol class="log-lines" data-tail-target="list">{% if tail %}{% include 'logging/_lines.html.twig' with {lines: tail.items} %}{% endif %}</ol>
+    </section>
+
+    <button type="button" class="new-lines" data-tail-target="newLines" data-action="tail#jump" hidden></button>
+</div>
+{% endblock %}
