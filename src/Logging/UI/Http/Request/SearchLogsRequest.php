@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Watchdog\Logging\UI\Http\Request;
 
-use Watchdog\Logging\Application\Query\SearchLogs\LogQueryFilters;
-use Watchdog\Logging\Application\Query\SearchLogs\SearchLogs;
+use Watchdog\Logging\Application\Query\LogQueryFilters;
+use Watchdog\Logging\Application\Query\SearchLogs;
 
 /**
  * Query string of a log search; the handler validates the values (one place for the rules).
@@ -27,15 +27,8 @@ final readonly class SearchLogsRequest
     ) {
     }
 
-    public function toQuery(string $projectId): SearchLogs
+    public function filters(): LogQueryFilters
     {
-        return new SearchLogs(
-            projectId: $projectId,
-            filters: new LogQueryFilters($this->level, $this->sources, $this->q, $this->context),
-            from: $this->from,
-            to: $this->to,
-            cursor: $this->cursor,
-            limit: $this->limit,
-        );
+        return new LogQueryFilters($this->level, $this->sources, $this->q, $this->context);
     }
 }

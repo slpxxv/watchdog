@@ -7,11 +7,9 @@ namespace Watchdog\Tests\Unit\Logging\Application;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Clock\MockClock;
 use Watchdog\Logging\Application\Query\LogEntryPresenter;
-use Watchdog\Logging\Application\Query\SearchLogs\LogQueryFilters;
-use Watchdog\Logging\Application\Query\SearchLogs\SearchLogs;
-use Watchdog\Logging\Application\Query\SearchLogs\SearchLogsHandler;
-use Watchdog\Logging\Application\Query\TailLogs\TailLogs;
-use Watchdog\Logging\Application\Query\TailLogs\TailLogsHandler;
+use Watchdog\Logging\Application\Query\LogQueryFilters;
+use Watchdog\Logging\Application\Query\SearchLogs;
+use Watchdog\Logging\Application\Query\TailLogs;
 use Watchdog\Logging\Domain\Exception\UnknownProject;
 use Watchdog\Logging\Domain\Log\Exception\InvalidLogQuery;
 use Watchdog\Logging\Domain\Log\LogCursor;
@@ -32,8 +30,8 @@ final class LogQueriesTest extends TestCase
     private const string SOURCE = '00000000-0000-7000-c000-000000000001';
 
     private SpyLogStore $logs;
-    private SearchLogsHandler $search;
-    private TailLogsHandler $tail;
+    private SearchLogs $search;
+    private TailLogs $tail;
 
     protected function setUp(): void
     {
@@ -44,8 +42,8 @@ final class LogQueriesTest extends TestCase
         $clock = new MockClock('2026-10-11 12:00:00 UTC');
         $presenter = new LogEntryPresenter($sources);
 
-        $this->search = new SearchLogsHandler($this->logs, $projects, $presenter, new FixedRetention(14), $clock);
-        $this->tail = new TailLogsHandler($this->logs, $projects, $presenter, $clock);
+        $this->search = new SearchLogs($this->logs, $projects, $presenter, new FixedRetention(14), $clock);
+        $this->tail = new TailLogs($this->logs, $projects, $presenter, $clock);
     }
 
     private function entry(int $id, string $sourceId = self::SOURCE): LogEntry
@@ -64,7 +62,7 @@ final class LogQueriesTest extends TestCase
 
     public function testSearchDefaultsToTheLast24Hours(): void
     {
-        $page = ($this->search)(new SearchLogs(self::PROJECT));
+        $page = ($this->search)(self::PROJECT);
 
         self::assertEquals(new \DateTimeImmutable('2026-10-10 12:00:00 UTC'), $this->logs->lastFilter?->from);
         self::assertNull($this->logs->lastFilter?->to);
@@ -74,7 +72,7 @@ final class LogQueriesTest extends TestCase
 
     public function testAnUpperBoundAloneStillGetsA24HourWindow(): void
     {
-        ($this->search)(new SearchLogs(self::PROJECT, to: new \DateTimeImmutable('2026-10-01 00:00 UTC')));
+        ($this->search)(self::PROJECT, to: new \DateTimeImmutable('2026-10-01 00:00 UTC'));
 
         self::assertEquals(new \DateTimeImmutable('2026-09-30 00:00 UTC'), $this->logs->lastFilter?->from);
     }
@@ -83,12 +81,12 @@ final class LogQueriesTest extends TestCase
     {
         $cursor = new LogCursor(new \DateTimeImmutable('2026-10-11 11:00 UTC'), 7);
 
-        ($this->search)(new SearchLogs(
+        ($this->search)(
             self::PROJECT,
             new LogQueryFilters('warning', [self::SOURCE], '  timeout  ', '{"env":"prod"}'),
             cursor: $cursor->encode(),
             limit: 50,
-        ));
+        );
 
         $filter = $this->logs->lastFilter;
         self::assertNotNull($filter);
@@ -105,7 +103,7 @@ final class LogQueriesTest extends TestCase
         $this->logs->entries = [$this->entry(2), $this->entry(1, '00000000-0000-7000-c000-000000000099')];
         $this->logs->next = new LogCursor(new \DateTimeImmutable('2026-10-11 11:00 UTC'), 1);
 
-        $page = ($this->search)(new SearchLogs(self::PROJECT));
+        $page = ($this->search)(self::PROJECT);
 
         self::assertSame('API', $page->items[0]->sourceName);
         self::assertNull($page->items[1]->sourceName, 'source from elsewhere: no name, no failure');
@@ -115,38 +113,38 @@ final class LogQueriesTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{SearchLogs}>
+     * @return iterable<string, array{\Closure(SearchLogs): mixed}>
      */
     public static function invalidSearches(): iterable
     {
-        yield 'unknown level' => [new SearchLogs(self::PROJECT, new LogQueryFilters('loud'))];
-        yield 'source not a uuid' => [new SearchLogs(self::PROJECT, new LogQueryFilters(sourceIds: ['nope']))];
-        yield 'context not json' => [new SearchLogs(self::PROJECT, new LogQueryFilters(context: '{oops'))];
-        yield 'context a list' => [new SearchLogs(self::PROJECT, new LogQueryFilters(context: '[1,2]'))];
-        yield 'bad cursor' => [new SearchLogs(self::PROJECT, cursor: 'garbage')];
-        yield 'limit too high' => [new SearchLogs(self::PROJECT, limit: 201)];
-        yield 'limit zero' => [new SearchLogs(self::PROJECT, limit: 0)];
-        yield 'empty range' => [new SearchLogs(self::PROJECT, from: new \DateTimeImmutable('2026-10-11'), to: new \DateTimeImmutable('2026-10-10'))];
+        yield 'unknown level' => [static fn (SearchLogs $search): mixed => $search(self::PROJECT, filters: new LogQueryFilters('loud'))];
+        yield 'source not a uuid' => [static fn (SearchLogs $search): mixed => $search(self::PROJECT, filters: new LogQueryFilters(sourceIds: ['nope']))];
+        yield 'context not json' => [static fn (SearchLogs $search): mixed => $search(self::PROJECT, filters: new LogQueryFilters(context: '{oops'))];
+        yield 'context a list' => [static fn (SearchLogs $search): mixed => $search(self::PROJECT, filters: new LogQueryFilters(context: '[1,2]'))];
+        yield 'bad cursor' => [static fn (SearchLogs $search): mixed => $search(self::PROJECT, cursor: 'garbage')];
+        yield 'limit too high' => [static fn (SearchLogs $search): mixed => $search(self::PROJECT, limit: 201)];
+        yield 'limit zero' => [static fn (SearchLogs $search): mixed => $search(self::PROJECT, limit: 0)];
+        yield 'empty range' => [static fn (SearchLogs $search): mixed => $search(self::PROJECT, from: new \DateTimeImmutable('2026-10-11'), to: new \DateTimeImmutable('2026-10-10'))];
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('invalidSearches')]
-    public function testInvalidSearchesAreRejectedNotGuessed(SearchLogs $query): void
+    public function testInvalidSearchesAreRejectedNotGuessed(\Closure $search): void
     {
         $this->expectException(InvalidLogQuery::class);
-        ($this->search)($query);
+        $search($this->search);
     }
 
     public function testUnknownProject(): void
     {
         $this->expectException(UnknownProject::class);
-        ($this->search)(new SearchLogs('00000000-0000-7000-a000-000000000099'));
+        ($this->search)('00000000-0000-7000-a000-000000000099');
     }
 
     public function testTailReportsTheHighestIdSeen(): void
     {
         $this->logs->entries = [$this->entry(5), $this->entry(9), $this->entry(7)];
 
-        $tail = ($this->tail)(new TailLogs(self::PROJECT, afterId: 4, filters: new LogQueryFilters('error')));
+        $tail = ($this->tail)(self::PROJECT, afterId: 4, filters: new LogQueryFilters('error'));
 
         self::assertSame(9, $tail->lastId);
         self::assertSame(['line 5', 'line 9', 'line 7'], array_map(static fn ($e): string => $e->message, $tail->items));
@@ -159,14 +157,14 @@ final class LogQueriesTest extends TestCase
 
     public function testEmptyTailKeepsTheCursor(): void
     {
-        self::assertSame(42, ($this->tail)(new TailLogs(self::PROJECT, afterId: 42))->lastId);
+        self::assertSame(42, ($this->tail)(self::PROJECT, afterId: 42)->lastId);
     }
 
     public function testTailRejectsANegativeCursorOrLimitOverMax(): void
     {
-        foreach ([new TailLogs(self::PROJECT, afterId: -1), new TailLogs(self::PROJECT, limit: 501)] as $query) {
+        foreach ([['afterId' => -1], ['limit' => 501]] as $arguments) {
             try {
-                ($this->tail)($query);
+                ($this->tail)(self::PROJECT, ...$arguments);
                 self::fail('Expected InvalidLogQuery.');
             } catch (InvalidLogQuery) {
                 $this->addToAssertionCount(1);

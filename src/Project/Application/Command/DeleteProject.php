@@ -1,0 +1,29 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Watchdog\Project\Application\Command;
+
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Watchdog\Project\Application\Event\ProjectDeleted;
+use Watchdog\Project\Domain\Exception\ProjectNotFound;
+use Watchdog\Project\Domain\ProjectId;
+use Watchdog\Project\Domain\ProjectRepository;
+
+final readonly class DeleteProject
+{
+    public function __construct(
+        private ProjectRepository $projects,
+        private EventDispatcherInterface $events,
+    ) {
+    }
+
+    public function __invoke(string $id): void
+    {
+        $id = ProjectId::fromString($id);
+        $project = $this->projects->ofId($id) ?? throw ProjectNotFound::withId($id);
+
+        $this->projects->remove($project);
+        $this->events->dispatch(new ProjectDeleted($id->value));
+    }
+}

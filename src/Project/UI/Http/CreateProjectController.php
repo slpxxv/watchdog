@@ -10,18 +10,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Watchdog\Project\Application\Command\CreateProject\CreateProject;
-use Watchdog\Project\Application\Command\CreateProject\CreateProjectHandler;
-use Watchdog\Project\Application\Query\GetProject\GetProject;
-use Watchdog\Project\Application\Query\GetProject\GetProjectHandler;
+use Watchdog\Project\Application\Command\CreateProject;
+use Watchdog\Project\Application\Query\GetProject;
 use Watchdog\Project\UI\Http\Request\CreateProjectRequest;
 use Watchdog\Shared\Domain\Permission;
 
 final class CreateProjectController extends AbstractController
 {
     public function __construct(
-        private readonly CreateProjectHandler $createProject,
-        private readonly GetProjectHandler $getProject,
+        private readonly CreateProject $createProject,
+        private readonly GetProject $getProject,
     ) {
     }
 
@@ -29,10 +27,10 @@ final class CreateProjectController extends AbstractController
     #[IsGranted(Permission::ProjectManage->value)]
     public function __invoke(#[MapRequestPayload] CreateProjectRequest $request): JsonResponse
     {
-        $id = ($this->createProject)(new CreateProject($request->name))->value;
+        $id = ($this->createProject)($request->name)->value;
 
         return $this->json(
-            ($this->getProject)(new GetProject($id)),
+            ($this->getProject)($id),
             Response::HTTP_CREATED,
             ['Location' => $this->generateUrl('project_get', ['id' => $id])],
         );

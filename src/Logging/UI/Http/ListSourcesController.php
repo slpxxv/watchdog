@@ -10,13 +10,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Watchdog\Logging\Application\Query\ListSources\ListSources;
-use Watchdog\Logging\Application\Query\ListSources\ListSourcesHandler;
+use Watchdog\Logging\Application\Query\ListSources;
 
 final class ListSourcesController extends AbstractController
 {
     public function __construct(
-        private readonly ListSourcesHandler $listSources,
+        private readonly ListSources $listSources,
     ) {
     }
 
@@ -30,6 +29,6 @@ final class ListSourcesController extends AbstractController
     #[IsGranted(new Expression('is_granted("source.manage") or is_granted("log.view")'))]
     public function __invoke(string $projectId): JsonResponse
     {
-        return $this->json(($this->listSources)(new ListSources($projectId)));
+        return $this->json(($this->listSources)($projectId));
     }
 }

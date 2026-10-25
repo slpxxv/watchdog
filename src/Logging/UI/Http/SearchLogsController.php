@@ -11,14 +11,14 @@ use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Watchdog\Logging\Application\Query\SearchLogs\SearchLogsHandler;
+use Watchdog\Logging\Application\Query\SearchLogs;
 use Watchdog\Logging\UI\Http\Request\SearchLogsRequest;
 use Watchdog\Shared\Domain\Permission;
 
 final class SearchLogsController extends AbstractController
 {
     public function __construct(
-        private readonly SearchLogsHandler $searchLogs,
+        private readonly SearchLogs $searchLogs,
     ) {
     }
 
@@ -33,6 +33,13 @@ final class SearchLogsController extends AbstractController
         string $projectId,
         #[MapQueryString(validationFailedStatusCode: Response::HTTP_UNPROCESSABLE_ENTITY, mapWhenEmpty: true)] SearchLogsRequest $request,
     ): JsonResponse {
-        return $this->json(($this->searchLogs)($request->toQuery($projectId)));
+        return $this->json(($this->searchLogs)(
+            projectId: $projectId,
+            filters: $request->filters(),
+            from: $request->from,
+            to: $request->to,
+            cursor: $request->cursor,
+            limit: $request->limit,
+        ));
     }
 }

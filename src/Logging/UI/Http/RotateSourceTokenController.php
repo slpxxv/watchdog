@@ -10,14 +10,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Watchdog\Logging\Application\Command\RotateSourceToken\RotateSourceToken;
-use Watchdog\Logging\Application\Command\RotateSourceToken\RotateSourceTokenHandler;
+use Watchdog\Logging\Application\Command\RotateSourceToken;
 use Watchdog\Shared\Domain\Permission;
 
 final class RotateSourceTokenController extends AbstractController
 {
     public function __construct(
-        private readonly RotateSourceTokenHandler $rotateSourceToken,
+        private readonly RotateSourceToken $rotateSourceToken,
     ) {
     }
 
@@ -31,7 +30,7 @@ final class RotateSourceTokenController extends AbstractController
     public function __invoke(string $id): JsonResponse
     {
         return $this->json(
-            ($this->rotateSourceToken)(new RotateSourceToken($id)),
+            ($this->rotateSourceToken)($id),
             Response::HTTP_OK,
             ['Cache-Control' => 'no-store'],
         );

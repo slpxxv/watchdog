@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Watchdog\Logging\Application\Query\TailLogs\TailLogsHandler;
+use Watchdog\Logging\Application\Query\TailLogs;
 use Watchdog\Logging\UI\Http\Request\TailLogsRequest;
 use Watchdog\Shared\Domain\Permission;
 
@@ -21,7 +21,7 @@ use Watchdog\Shared\Domain\Permission;
 final class TailLogsController extends AbstractController
 {
     public function __construct(
-        private readonly TailLogsHandler $tailLogs,
+        private readonly TailLogs $tailLogs,
     ) {
     }
 
@@ -36,6 +36,11 @@ final class TailLogsController extends AbstractController
         string $projectId,
         #[MapQueryString(validationFailedStatusCode: Response::HTTP_UNPROCESSABLE_ENTITY, mapWhenEmpty: true)] TailLogsRequest $request,
     ): JsonResponse {
-        return $this->json(($this->tailLogs)($request->toQuery($projectId)));
+        return $this->json(($this->tailLogs)(
+            projectId: $projectId,
+            afterId: $request->after,
+            filters: $request->filters(),
+            limit: $request->limit,
+        ));
     }
 }

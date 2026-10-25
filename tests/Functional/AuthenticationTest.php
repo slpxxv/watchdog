@@ -6,8 +6,7 @@ namespace Watchdog\Tests\Functional;
 
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Watchdog\Identity\Application\Command\CreateUser\CreateUser;
-use Watchdog\Identity\Application\Command\CreateUser\CreateUserHandler;
+use Watchdog\Identity\Application\Command\CreateUser;
 use Watchdog\Identity\Domain\Role\Role;
 use Watchdog\Shared\Domain\Permission;
 
@@ -22,9 +21,9 @@ final class AuthenticationTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = self::createClient();
-        $handler = self::getContainer()->get(CreateUserHandler::class);
-        $handler(new CreateUser(self::EMAIL, self::PASSWORD));
-        $handler(new CreateUser(self::ADMIN, self::PASSWORD, [Role::USER, Role::SUPER_ADMIN]));
+        $handler = self::getContainer()->get(CreateUser::class);
+        $handler(self::EMAIL, self::PASSWORD);
+        $handler(self::ADMIN, self::PASSWORD, [Role::USER, Role::SUPER_ADMIN]);
     }
 
     /**

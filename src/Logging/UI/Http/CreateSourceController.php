@@ -11,15 +11,14 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Watchdog\Logging\Application\Command\CreateSource\CreateSource;
-use Watchdog\Logging\Application\Command\CreateSource\CreateSourceHandler;
+use Watchdog\Logging\Application\Command\CreateSource;
 use Watchdog\Logging\UI\Http\Request\CreateSourceRequest;
 use Watchdog\Shared\Domain\Permission;
 
 final class CreateSourceController extends AbstractController
 {
     public function __construct(
-        private readonly CreateSourceHandler $createSource,
+        private readonly CreateSource $createSource,
     ) {
     }
 
@@ -32,10 +31,10 @@ final class CreateSourceController extends AbstractController
     #[IsGranted(Permission::SourceManage->value)]
     public function __invoke(string $projectId, #[MapRequestPayload] CreateSourceRequest $request): JsonResponse
     {
-        $created = ($this->createSource)(new CreateSource(
+        $created = ($this->createSource)(
             projectId: $projectId,
             name: $request->name,
-        ));
+        );
 
         // The token is shown once; keep it out of any shared or browser cache.
         return $this->json($created, Response::HTTP_CREATED, ['Cache-Control' => 'no-store']);

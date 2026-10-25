@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Watchdog\Tests\Unit\Logging\Application;
 
 use PHPUnit\Framework\TestCase;
-use Watchdog\Logging\Application\Command\IngestLogs\LineNormalizer;
-use Watchdog\Logging\Application\Command\IngestLogs\NormalizedLine;
+use Watchdog\Logging\Application\Service\LineNormalizer;
+use Watchdog\Logging\Application\Service\NormalizedLine;
 use Watchdog\Logging\Domain\Log\LogLevel;
 use Watchdog\Logging\Domain\ProjectId;
 use Watchdog\Logging\Domain\Source\SourceId;

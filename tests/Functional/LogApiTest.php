@@ -6,19 +6,16 @@ namespace Watchdog\Tests\Functional;
 
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Watchdog\Identity\Application\Command\CreateUser\CreateUser;
-use Watchdog\Identity\Application\Command\CreateUser\CreateUserHandler;
+use Watchdog\Identity\Application\Command\CreateUser;
 use Watchdog\Identity\Domain\Role\Role;
 use Watchdog\Identity\Domain\Role\RoleRepository;
-use Watchdog\Logging\Application\Command\CreateSource\CreateSource;
-use Watchdog\Logging\Application\Command\CreateSource\CreateSourceHandler;
+use Watchdog\Logging\Application\Command\CreateSource;
 use Watchdog\Logging\Domain\Log\LogEntry;
 use Watchdog\Logging\Domain\Log\LogLevel;
 use Watchdog\Logging\Domain\Log\LogStore;
 use Watchdog\Logging\Domain\ProjectId;
 use Watchdog\Logging\Domain\Source\SourceId;
-use Watchdog\Project\Application\Command\CreateProject\CreateProject;
-use Watchdog\Project\Application\Command\CreateProject\CreateProjectHandler;
+use Watchdog\Project\Application\Command\CreateProject;
 use Watchdog\Shared\Domain\Permission;
 
 final class LogApiTest extends WebTestCase
@@ -35,14 +32,14 @@ final class LogApiTest extends WebTestCase
         $this->client = self::createClient();
         $roles = self::getContainer()->get(RoleRepository::class);
         $roles->save(Role::create($roles->nextIdentity(), 'project_viewer', 'Project viewer', [Permission::ProjectView]));
-        $createUser = self::getContainer()->get(CreateUserHandler::class);
-        $createUser(new CreateUser('root@example.com', self::PASSWORD, [Role::USER, Role::SUPER_ADMIN]));
-        $createUser(new CreateUser('viewer@example.com', self::PASSWORD, [Role::USER, 'project_viewer']));
+        $createUser = self::getContainer()->get(CreateUser::class);
+        $createUser('root@example.com', self::PASSWORD, [Role::USER, Role::SUPER_ADMIN]);
+        $createUser('viewer@example.com', self::PASSWORD, [Role::USER, 'project_viewer']);
 
-        $this->projectId = self::getContainer()->get(CreateProjectHandler::class)(new CreateProject('Sklep'))->value;
-        $createSource = self::getContainer()->get(CreateSourceHandler::class);
-        $this->apiSource = $createSource(new CreateSource($this->projectId, 'API'))->source->id;
-        $this->workerSource = $createSource(new CreateSource($this->projectId, 'Worker'))->source->id;
+        $this->projectId = self::getContainer()->get(CreateProject::class)('Sklep')->value;
+        $createSource = self::getContainer()->get(CreateSource::class);
+        $this->apiSource = $createSource($this->projectId, 'API')->source->id;
+        $this->workerSource = $createSource($this->projectId, 'Worker')->source->id;
     }
 
     private function logIn(string $email = 'root@example.com'): void

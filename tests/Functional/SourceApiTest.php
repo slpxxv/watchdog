@@ -9,11 +9,10 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\InMemory\InMemoryTransport;
-use Watchdog\Identity\Application\Command\CreateUser\CreateUser;
-use Watchdog\Identity\Application\Command\CreateUser\CreateUserHandler;
+use Watchdog\Identity\Application\Command\CreateUser;
 use Watchdog\Identity\Domain\Role\Role;
 use Watchdog\Identity\Domain\Role\RoleRepository;
-use Watchdog\Logging\Application\Command\PurgeProjectLogs\PurgeProjectLogs;
+use Watchdog\Logging\Application\Message\PurgeProjectLogsMessage;
 use Watchdog\Logging\Domain\Source\SourceRepository;
 use Watchdog\Logging\Domain\Source\SourceToken;
 use Watchdog\Shared\Domain\Permission;
@@ -35,10 +34,10 @@ final class SourceApiTest extends WebTestCase
         $roles->save(Role::create($roles->nextIdentity(), 'project_viewer', 'Project viewer', [Permission::ProjectView]));
         $roles->save(Role::create($roles->nextIdentity(), 'log_viewer', 'Log viewer', [Permission::LogView]));
 
-        $createUser = self::getContainer()->get(CreateUserHandler::class);
-        $createUser(new CreateUser(self::ADMIN, self::PASSWORD, [Role::USER, Role::SUPER_ADMIN]));
-        $createUser(new CreateUser(self::VIEWER, self::PASSWORD, [Role::USER, 'project_viewer']));
-        $createUser(new CreateUser(self::LOG_VIEWER, self::PASSWORD, [Role::USER, 'log_viewer']));
+        $createUser = self::getContainer()->get(CreateUser::class);
+        $createUser(self::ADMIN, self::PASSWORD, [Role::USER, Role::SUPER_ADMIN]);
+        $createUser(self::VIEWER, self::PASSWORD, [Role::USER, 'project_viewer']);
+        $createUser(self::LOG_VIEWER, self::PASSWORD, [Role::USER, 'log_viewer']);
     }
 
     /**
@@ -147,7 +146,7 @@ final class SourceApiTest extends WebTestCase
         // Logs go in the background: one purge message queued for the worker.
         $transport = self::getContainer()->get('messenger.transport.async');
         self::assertInstanceOf(InMemoryTransport::class, $transport);
-        self::assertEquals([new PurgeProjectLogs($projectId)], array_map(static fn (Envelope $e): object => $e->getMessage(), $transport->getSent()));
+        self::assertEquals([new PurgeProjectLogsMessage($projectId)], array_map(static fn (Envelope $e): object => $e->getMessage(), $transport->getSent()));
     }
 
     public function testUnknownProjectOrSourceIsNotFound(): void

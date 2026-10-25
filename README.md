@@ -44,21 +44,23 @@ src/Identity/
 │   ├── Role/                    aggregate: Role, RoleId, RoleRepository (port), Exception/
 │   └── Acl/                     Permission catalogue, PrivilegeEscalation
 ├── Application/                 use cases
-│   ├── Command/<UseCase>/       input DTO (command) + handler; changes state
-│   ├── Query/<UseCase>/         input DTO (query) + handler; returns an output DTO
+│   ├── Command/<UseCase>.php    one class per use case, `__invoke(...args)`; changes state
+│   ├── Query/<UseCase>.php      one class per use case, `__invoke(...args)`; returns an output DTO
+│   ├── Message/                 queue messages (Messenger), when a use case runs asynchronously
 │   ├── Dto/                     output DTOs (read models: scalars only, never aggregates)
-│   ├── Service/                 application services shared by handlers (Actor, RoleResolver)
+│   ├── Service/                 application services shared by use cases (Actor, RoleResolver)
 │   ├── Port/                    driven ports the app needs from outside (PasswordHasher, CurrentActor)
 │   └── Exception/               application-level errors (WeakPassword)
 ├── Infrastructure/              driven adapters: Doctrine repositories + XML mapping, Symfony Security
 └── UI/                          driving adapters: Http (thin controllers), Console
 ```
 
-- A request goes **UI → handler → Domain**, and comes back as a **DTO**: `SecurityController` reads the actor
-  from the `CurrentActor` port, calls `GetUserHandler`, returns its `UserDto` as JSON.
+- A request goes **UI → use case → Domain**, and comes back as a **DTO**: `SecurityController` reads the actor
+  from the `CurrentActor` port, calls `GetUser`, returns its `UserDto` as JSON.
 - Ports are interfaces next to the code that needs them (repositories in `Domain`, the rest in
   `Application/Port`); adapters in `Infrastructure` implement them and autowiring binds them.
-- Handlers are plain invokable services (`($handler)($command)`), not Messenger handlers.
+- A use case is one plain invokable service taking its arguments directly (`($renameProject)(id: $id, name: $name)`),
+  with no command object and no Messenger. Queue messages are separate classes in `Application/Message`.
 - Doctrine mapping files are named after the class path below `Domain`: `User.User.orm.xml`.
 
 ## Sending logs

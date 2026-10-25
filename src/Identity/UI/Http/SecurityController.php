@@ -8,14 +8,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Watchdog\Identity\Application\Port\CurrentActor;
-use Watchdog\Identity\Application\Query\GetUser\GetUser;
-use Watchdog\Identity\Application\Query\GetUser\GetUserHandler;
+use Watchdog\Identity\Application\Query\GetUser;
 
 final class SecurityController extends AbstractController
 {
     public function __construct(
         private readonly CurrentActor $actor,
-        private readonly GetUserHandler $getUser,
+        private readonly GetUser $getUser,
     ) {
     }
 
@@ -31,6 +30,6 @@ final class SecurityController extends AbstractController
     #[Route('/api/me', name: 'identity_me', methods: ['GET'])]
     public function me(): JsonResponse
     {
-        return $this->json(($this->getUser)(new GetUser($this->actor->id())));
+        return $this->json(($this->getUser)($this->actor->id()));
     }
 }

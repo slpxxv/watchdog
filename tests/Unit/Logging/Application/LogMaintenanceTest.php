@@ -7,10 +7,8 @@ namespace Watchdog\Tests\Unit\Logging\Application;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\AbstractLogger;
 use Symfony\Component\Clock\MockClock;
-use Watchdog\Logging\Application\Command\PrepareLogPartitions\PrepareLogPartitions;
-use Watchdog\Logging\Application\Command\PrepareLogPartitions\PrepareLogPartitionsHandler;
-use Watchdog\Logging\Application\Command\PurgeProjectLogs\PurgeProjectLogs;
-use Watchdog\Logging\Application\Command\PurgeProjectLogs\PurgeProjectLogsHandler;
+use Watchdog\Logging\Application\Command\PrepareLogPartitions;
+use Watchdog\Logging\Application\Command\PurgeProjectLogs;
 use Watchdog\Logging\Application\Port\LogPartitions;
 use Watchdog\Logging\Domain\Log\LogCursor;
 use Watchdog\Logging\Domain\Log\LogFilter;
@@ -59,14 +57,14 @@ final class LogMaintenanceTest extends TestCase
             }
         };
         // 01:30 in Warsaw on the 11th is still the 10th in UTC: days are counted in UTC.
-        $handler = new PrepareLogPartitionsHandler($partitions, new MockClock('2026-10-11 01:30:00', 'Europe/Warsaw'), $logger);
+        $handler = new PrepareLogPartitions($partitions, new MockClock('2026-10-11 01:30:00', 'Europe/Warsaw'), $logger);
 
-        self::assertSame(['log_entry_p20261017'], $handler(new PrepareLogPartitions()));
+        self::assertSame(['log_entry_p20261017'], $handler());
         self::assertSame([['2026-10-03 00:00 UTC', '2026-10-17 00:00 UTC']], $partitions->calls);
         self::assertSame(0, $logger->count());
 
         $partitions->stray = 3;
-        $handler(new PrepareLogPartitions());
+        $handler();
         self::assertSame(1, $logger->count());
     }
 
@@ -74,7 +72,7 @@ final class LogMaintenanceTest extends TestCase
     {
         $store = new class implements LogStore {
             /** @var list<int> */
-            public array $remaining = [PurgeProjectLogsHandler::BATCH_SIZE, PurgeProjectLogsHandler::BATCH_SIZE, 3];
+            public array $remaining = [PurgeProjectLogs::BATCH_SIZE, PurgeProjectLogs::BATCH_SIZE, 3];
             public int $calls = 0;
 
             public function append(array $entries): void
@@ -99,9 +97,9 @@ final class LogMaintenanceTest extends TestCase
             }
         };
 
-        $deleted = (new PurgeProjectLogsHandler($store))(new PurgeProjectLogs('00000000-0000-7000-a000-000000000001'));
+        $deleted = (new PurgeProjectLogs($store))('00000000-0000-7000-a000-000000000001');
 
-        self::assertSame(2 * PurgeProjectLogsHandler::BATCH_SIZE + 3, $deleted);
+        self::assertSame(2 * PurgeProjectLogs::BATCH_SIZE + 3, $deleted);
         self::assertSame(3, $store->calls, 'stops after the first short batch');
     }
 }

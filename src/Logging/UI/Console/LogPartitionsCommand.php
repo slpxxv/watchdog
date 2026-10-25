@@ -7,8 +7,7 @@ namespace Watchdog\Logging\UI\Console;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Watchdog\Logging\Application\Command\PrepareLogPartitions\PrepareLogPartitions;
-use Watchdog\Logging\Application\Command\PrepareLogPartitions\PrepareLogPartitionsHandler;
+use Watchdog\Logging\Application\Command\PrepareLogPartitions;
 
 /**
  * Run on deploy; the scheduler repeats it daily.
@@ -17,13 +16,13 @@ use Watchdog\Logging\Application\Command\PrepareLogPartitions\PrepareLogPartitio
 final readonly class LogPartitionsCommand
 {
     public function __construct(
-        private PrepareLogPartitionsHandler $preparePartitions,
+        private PrepareLogPartitions $preparePartitions,
     ) {
     }
 
     public function __invoke(SymfonyStyle $io): int
     {
-        $created = ($this->preparePartitions)(new PrepareLogPartitions());
+        $created = ($this->preparePartitions)();
 
         $io->success([] === $created ? 'All log partitions are in place.' : 'Created: '.implode(', ', $created));
 

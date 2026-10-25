@@ -12,8 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Watchdog\Logging\Application\Command\IngestLogs\IngestLogs;
-use Watchdog\Logging\Application\Command\IngestLogs\IngestLogsHandler;
+use Watchdog\Logging\Application\Command\IngestLogs;
 use Watchdog\Logging\UI\Http\Ingest\IngestPayloadReader;
 use Watchdog\Logging\UI\Http\Ingest\InvalidPayload;
 use Watchdog\Shared\UI\Http\Problem\ProblemDetails;
@@ -25,7 +24,7 @@ use Watchdog\Shared\UI\Http\Problem\ProblemDetails;
 final class IngestController extends AbstractController
 {
     public function __construct(
-        private readonly IngestLogsHandler $ingestLogs,
+        private readonly IngestLogs $ingestLogs,
         private readonly IngestPayloadReader $reader,
         private readonly RateLimiterFactoryInterface $logIngestLimiter,
     ) {
@@ -52,7 +51,7 @@ final class IngestController extends AbstractController
         }
 
         return $this->json(
-            ($this->ingestLogs)(new IngestLogs($sourceId, $lines)),
+            ($this->ingestLogs)($sourceId, $lines),
             Response::HTTP_ACCEPTED,
         );
     }

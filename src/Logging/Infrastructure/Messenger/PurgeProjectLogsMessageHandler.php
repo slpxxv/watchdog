@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Watchdog\Logging\Infrastructure\Messenger;
 
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Watchdog\Logging\Application\Command\PurgeProjectLogs\PurgeProjectLogs;
-use Watchdog\Logging\Application\Command\PurgeProjectLogs\PurgeProjectLogsHandler;
+use Watchdog\Logging\Application\Command\PurgeProjectLogs;
+use Watchdog\Logging\Application\Message\PurgeProjectLogsMessage;
 
 /**
  * Messenger entry point; the Application handler stays free of framework attributes.
@@ -15,12 +15,12 @@ use Watchdog\Logging\Application\Command\PurgeProjectLogs\PurgeProjectLogsHandle
 final readonly class PurgeProjectLogsMessageHandler
 {
     public function __construct(
-        private PurgeProjectLogsHandler $purgeProjectLogs,
+        private PurgeProjectLogs $purgeProjectLogs,
     ) {
     }
 
-    public function __invoke(PurgeProjectLogs $message): void
+    public function __invoke(PurgeProjectLogsMessage $message): void
     {
-        ($this->purgeProjectLogs)($message);
+        ($this->purgeProjectLogs)($message->projectId);
     }
 }

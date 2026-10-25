@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Watchdog\Logging\UI\Http\Request;
 
-use Watchdog\Logging\Application\Query\SearchLogs\LogQueryFilters;
-use Watchdog\Logging\Application\Query\TailLogs\TailLogs;
+use Watchdog\Logging\Application\Query\LogQueryFilters;
+use Watchdog\Logging\Application\Query\TailLogs;
 
 final readonly class TailLogsRequest
 {
@@ -22,13 +22,8 @@ final readonly class TailLogsRequest
     ) {
     }
 
-    public function toQuery(string $projectId): TailLogs
+    public function filters(): LogQueryFilters
     {
-        return new TailLogs(
-            projectId: $projectId,
-            afterId: $this->after,
-            filters: new LogQueryFilters($this->level, $this->sources, $this->q, $this->context),
-            limit: $this->limit,
-        );
+        return new LogQueryFilters($this->level, $this->sources, $this->q, $this->context);
     }
 }

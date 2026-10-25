@@ -6,21 +6,17 @@ namespace Watchdog\Tests\Functional;
 
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Watchdog\Identity\Application\Command\CreateUser\CreateUser;
-use Watchdog\Identity\Application\Command\CreateUser\CreateUserHandler;
+use Watchdog\Identity\Application\Command\CreateUser;
 use Watchdog\Identity\Domain\Role\Role;
-use Watchdog\Logging\Application\Command\CreateSource\CreateSource;
-use Watchdog\Logging\Application\Command\CreateSource\CreateSourceHandler;
-use Watchdog\Logging\Application\Command\RevokeSource\RevokeSource;
-use Watchdog\Logging\Application\Command\RevokeSource\RevokeSourceHandler;
+use Watchdog\Logging\Application\Command\CreateSource;
+use Watchdog\Logging\Application\Command\RevokeSource;
 use Watchdog\Logging\Domain\Log\LogEntry;
 use Watchdog\Logging\Domain\Log\LogFilter;
 use Watchdog\Logging\Domain\Log\LogLevel;
 use Watchdog\Logging\Domain\Log\LogStore;
 use Watchdog\Logging\Domain\ProjectId;
 use Watchdog\Logging\UI\Http\Ingest\IngestPayloadReader;
-use Watchdog\Project\Application\Command\CreateProject\CreateProject;
-use Watchdog\Project\Application\Command\CreateProject\CreateProjectHandler;
+use Watchdog\Project\Application\Command\CreateProject;
 
 final class IngestApiTest extends WebTestCase
 {
@@ -35,8 +31,8 @@ final class IngestApiTest extends WebTestCase
         // Keep one kernel: the rate limiter's test storage lives in memory.
         $this->client->disableReboot();
 
-        $this->projectId = self::getContainer()->get(CreateProjectHandler::class)(new CreateProject('Sklep'))->value;
-        $created = self::getContainer()->get(CreateSourceHandler::class)(new CreateSource($this->projectId, 'API'));
+        $this->projectId = self::getContainer()->get(CreateProject::class)('Sklep')->value;
+        $created = self::getContainer()->get(CreateSource::class)($this->projectId, 'API');
         $this->sourceId = $created->source->id;
         $this->token = $created->token;
     }
@@ -127,7 +123,7 @@ final class IngestApiTest extends WebTestCase
         $this->ingest('{"message":"x"}', token: 'wd_made-up');
         self::assertResponseStatusCodeSame(401);
 
-        self::getContainer()->get(RevokeSourceHandler::class)(new RevokeSource($this->sourceId));
+        self::getContainer()->get(RevokeSource::class)($this->sourceId);
         $this->ingest('{"message":"x"}');
         self::assertResponseStatusCodeSame(401);
 
@@ -136,7 +132,7 @@ final class IngestApiTest extends WebTestCase
 
     public function testASessionDoesNotOpenTheIngestEndpoint(): void
     {
-        self::getContainer()->get(CreateUserHandler::class)(new CreateUser('root@example.com', 'correct horse battery staple', [Role::USER, Role::SUPER_ADMIN]));
+        self::getContainer()->get(CreateUser::class)('root@example.com', 'correct horse battery staple', [Role::USER, Role::SUPER_ADMIN]);
         $this->client->jsonRequest('POST', '/api/login', ['email' => 'root@example.com', 'password' => 'correct horse battery staple']);
         self::assertResponseIsSuccessful();
 
@@ -157,7 +153,7 @@ final class IngestApiTest extends WebTestCase
         self::assertGreaterThan(0, (int) $this->client->getResponse()->headers->get('Retry-After'));
 
         // Another source has its own bucket.
-        $other = self::getContainer()->get(CreateSourceHandler::class)(new CreateSource($this->projectId, 'Worker'));
+        $other = self::getContainer()->get(CreateSource::class)($this->projectId, 'Worker');
         $this->ingest('{"message":"other source"}', token: $other->token);
         self::assertResponseStatusCodeSame(202);
     }

@@ -9,14 +9,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Watchdog\Logging\Application\Command\RevokeSource\RevokeSource;
-use Watchdog\Logging\Application\Command\RevokeSource\RevokeSourceHandler;
+use Watchdog\Logging\Application\Command\RevokeSource;
 use Watchdog\Shared\Domain\Permission;
 
 final class RevokeSourceController extends AbstractController
 {
     public function __construct(
-        private readonly RevokeSourceHandler $revokeSource,
+        private readonly RevokeSource $revokeSource,
     ) {
     }
 
@@ -29,7 +28,7 @@ final class RevokeSourceController extends AbstractController
     #[IsGranted(Permission::SourceManage->value)]
     public function __invoke(string $id): Response
     {
-        ($this->revokeSource)(new RevokeSource($id));
+        ($this->revokeSource)($id);
 
         return new Response(status: Response::HTTP_NO_CONTENT);
     }
