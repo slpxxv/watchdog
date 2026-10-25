@@ -9,10 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Watchdog\App\Http\DomainErrorListener;
-use Watchdog\App\Http\Problem\DomainErrorMapper;
-use Watchdog\App\Http\Problem\ProblemDetails;
 use Watchdog\Identity\Domain\Role\Exception\RoleNotFound;
+use Watchdog\Shared\UI\Http\DomainErrorListener;
+use Watchdog\Shared\UI\Http\Problem\DomainErrorMapper;
+use Watchdog\Shared\UI\Http\Problem\ProblemDetails;
 
 final class DomainErrorListenerTest extends TestCase
 {

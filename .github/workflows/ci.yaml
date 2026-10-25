@@ -40,7 +40,7 @@ jobs:
       - id: filter
         env:
           EVENT: ${{ github.event_name }}
-          BACKEND: '^(src|app|tests|config|migrations|bin|public|templates|translations)/|^(composer\.(json|lock)|symfony\.lock|\.env.*|phpunit\.dist\.xml|phpstan\.dist\.neon|deptrac.*\.yaml|\.php-cs-fixer\.dist\.php|compose.*\.yaml)$|^\.github/(workflows/ci\.yaml|actions/)'
+          BACKEND: '^(src|tests|config|migrations|bin|public|templates|translations)/|^(composer\.(json|lock)|symfony\.lock|\.env.*|phpunit\.dist\.xml|phpstan\.dist\.neon|deptrac.*\.yaml|\.php-cs-fixer\.dist\.php|compose.*\.yaml)$|^\.github/(workflows/ci\.yaml|actions/)'
           FRONTEND: '^frontend/|^\.editorconfig$|^\.github/workflows/ci\.yaml$'
         run: |
           if [ "$EVENT" != pull_request ]; then

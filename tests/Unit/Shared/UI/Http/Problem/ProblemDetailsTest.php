@@ -6,7 +6,7 @@ namespace Watchdog\Tests\Unit\Shared\UI\Http\Problem;
 
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
-use Watchdog\App\Http\Problem\ProblemDetails;
+use Watchdog\Shared\UI\Http\Problem\ProblemDetails;
 
 final class ProblemDetailsTest extends TestCase
 {

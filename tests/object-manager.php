@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Symfony\Component\Dotenv\Dotenv;
-use Watchdog\App\Kernel;
+use Watchdog\Kernel;
 
 require dirname(__DIR__).'/vendor/autoload.php';
 

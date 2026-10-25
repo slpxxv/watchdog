@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Watchdog\App\Kernel;
+use Watchdog\Kernel;
 
 require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
 

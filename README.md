@@ -23,17 +23,14 @@ CI runs the same commands (`.github/workflows/ci.yaml`); its one required check 
 
 ## Architecture
 
-The repository is split in two, enforced by Deptrac (`deptrac.yaml`):
-
-- `src/<Context>/` is the domain: plain PHP, no framework. Each bounded context has `Domain` and `Application`.
-- `app/` is the Symfony application: kernel, controllers, Doctrine, security, messaging. It adapts the framework
-  to `src/` and may use anything. `src/` never depends on `app/`.
+Each bounded context in `src/<Context>/` has four layers, enforced by Deptrac (`deptrac.yaml`):
 
 | Layer | May depend on |
 |---|---|
-| `Domain` | only `doctrine/collections` (Doctrine mapping is XML in `app/Doctrine/<Context>/Mapping`) |
+| `Domain` | only `doctrine/collections` (Doctrine mapping is XML in Infrastructure) |
 | `Application` | Domain, PSR |
-| `app/` | Domain, Application, Symfony/Doctrine, PSR |
+| `Infrastructure` | Domain, Application, Symfony/Doctrine |
+| `UI` (Http/Console) | Application, Domain, Symfony |
 
 Contexts: `Identity` (users, roles, login API), `Project` (projects), `Logging` (log sources, ingestion, search,
 live tail, retention). Contexts talk only through each other's `Application/Query`, `Dto` and `Event` (`deptrac.contexts.yaml`).
@@ -53,28 +50,14 @@ src/Identity/
 │   ├── Service/                 application services shared by handlers (Actor, RoleResolver)
 │   ├── Port/                    driven ports the app needs from outside (PasswordHasher, CurrentActor)
 │   └── Exception/               application-level errors (WeakPassword)
-└── Application/Port/            what the use cases need from outside
+├── Infrastructure/              driven adapters: Doctrine repositories + XML mapping, Symfony Security
+└── UI/                          driving adapters: Http (thin controllers), Console
 ```
 
-and, by technical type, in `app/`:
-
-```
-app/
-├── Kernel.php
-├── Controller/<Context>/        thin controllers
-├── Request/<Context>/           request DTOs (#[MapRequestPayload], #[MapQueryString])
-├── Doctrine/<Context>/          repositories, DBAL stores, XML mapping (Mapping/)
-├── Security/<Context>/          voters, users, token handlers
-├── Command/                     console commands
-├── Messaging/                   Messenger handlers, Scheduler, event listeners
-├── Http/                        cross-cutting HTTP: error listener, problem+json
-└── Adapter/<Context>/           implementations of Application ports
-```
-
-- A request goes **controller → handler → Domain**, and comes back as a **DTO**: `SecurityController` reads the actor
+- A request goes **UI → handler → Domain**, and comes back as a **DTO**: `SecurityController` reads the actor
   from the `CurrentActor` port, calls `GetUserHandler`, returns its `UserDto` as JSON.
 - Ports are interfaces next to the code that needs them (repositories in `Domain`, the rest in
-  `Application/Port`); adapters in `app/` implement them and autowiring binds them.
+  `Application/Port`); adapters in `Infrastructure` implement them and autowiring binds them.
 - Handlers are plain invokable services (`($handler)($command)`), not Messenger handlers.
 - Doctrine mapping files are named after the class path below `Domain`: `User.User.orm.xml`.
 
